@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the inc_theme feature.
+ */
+
+include_once 'inc_theme.features.inc';

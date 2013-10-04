@@ -1,0 +1,14 @@
+name = inc_theme
+description = Theme settings
+core = 7.x
+package = Features
+version = 7.x-1.0
+project = inc_theme
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:2
+features[variable][] = theme_default
+features[variable][] = theme_incourage_at_files_directory
+features[variable][] = theme_incourage_at_settings
+features[variable][] = theme_settings
+features_exclude[dependencies][ctools] = ctools
+features_exclude[dependencies][strongarm] = strongarm

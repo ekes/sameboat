@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ *   Migrate voipextension 6.x to field voipextension 7.x
+ */
+
+/**
+ * Migrate voipnode extensions.
+ */
+function voipextension_migrate_voipnode() {
+  $result = db_select('voipextension', 'v')
+    ->fields('v', array('eid', 'module_id', 'enabled'))
+    ->condition('v.module', 'voipnode')
+    ->execute();
+
+  while ($extension = $result->fetchAssoc()) {
+    $node = node_load($extension['module_id']);
+    // @todo make which field configurable;
+    // or automatically add the field to the content type if it's not there.
+    $node->field_extension = array('und' => array( array('value' => $extension['eid'], 'enabled' => $extension['enabled'], 'script' => '') ));
+    // Should read the script from voipnode, and then decide if it's the
+    // default? Or assume this all needs upgrading anyway?
+    node_save($node);
+  }
+}

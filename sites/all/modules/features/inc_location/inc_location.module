@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the inc_location feature.
+ */
+
+include_once 'inc_location.features.inc';

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the inc_event feature.
+ */
+
+include_once 'inc_event.features.inc';

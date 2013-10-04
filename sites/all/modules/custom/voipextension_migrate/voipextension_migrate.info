@@ -1,0 +1,5 @@
+name = VoIP Extension migrate
+description = Migrate VoIP Extension to new field.
+package = VoIP Drupal
+core = 7.x
+dependencies[] = voipextension
