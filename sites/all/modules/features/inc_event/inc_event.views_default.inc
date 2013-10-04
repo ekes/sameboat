@@ -57,48 +57,14 @@ function inc_event_views_default_views() {
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['element_default_classes'] = FALSE;
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
-  $handler->display->display_options['fields']['title_1']['table'] = 'node';
-  $handler->display->display_options['fields']['title_1']['field'] = 'title';
-  $handler->display->display_options['fields']['title_1']['relationship'] = 'field_location_reference_nid';
-  $handler->display->display_options['fields']['title_1']['label'] = '';
-  $handler->display->display_options['fields']['title_1']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['title_1']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['title_1']['alter']['text'] = '[title_1],';
-  $handler->display->display_options['fields']['title_1']['alter']['strip_tags'] = TRUE;
-  $handler->display->display_options['fields']['title_1']['hide_empty'] = TRUE;
-  $handler->display->display_options['fields']['title_1']['link_to_node'] = FALSE;
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title_2']['id'] = 'title_2';
-  $handler->display->display_options['fields']['title_2']['table'] = 'node';
-  $handler->display->display_options['fields']['title_2']['field'] = 'title';
-  $handler->display->display_options['fields']['title_2']['relationship'] = 'field_organiser_reference_nid';
-  $handler->display->display_options['fields']['title_2']['label'] = '';
-  $handler->display->display_options['fields']['title_2']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['title_2']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['title_2']['alter']['text'] = '[title_2],';
-  $handler->display->display_options['fields']['title_2']['hide_empty'] = TRUE;
-  $handler->display->display_options['fields']['title_2']['link_to_node'] = FALSE;
-  /* Field: Content: Extension */
-  $handler->display->display_options['fields']['field_extension']['id'] = 'field_extension';
-  $handler->display->display_options['fields']['field_extension']['table'] = 'field_data_field_extension';
-  $handler->display->display_options['fields']['field_extension']['field'] = 'field_extension';
-  $handler->display->display_options['fields']['field_extension']['label'] = '';
-  $handler->display->display_options['fields']['field_extension']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_extension']['alter']['text'] = 'Call 715.952.9020 ext. [field_extension] or Text [field_extension] to 715.952.9020';
-  $handler->display->display_options['fields']['field_extension']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_extension']['element_default_classes'] = FALSE;
-  $handler->display->display_options['fields']['field_extension']['settings'] = array(
-    'prefix_suffix' => 1,
-    'status_display' => '0',
-  );
   /* Field: Content: Date */
   $handler->display->display_options['fields']['field_date']['id'] = 'field_date';
   $handler->display->display_options['fields']['field_date']['table'] = 'field_data_field_date';
   $handler->display->display_options['fields']['field_date']['field'] = 'field_date';
   $handler->display->display_options['fields']['field_date']['label'] = '';
+  $handler->display->display_options['fields']['field_date']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_date']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_date']['element_default_classes'] = FALSE;
   $handler->display->display_options['fields']['field_date']['settings'] = array(
     'format_type' => 'month_day_time',
     'fromto' => 'both',
@@ -110,6 +76,36 @@ function inc_event_views_default_views() {
   $handler->display->display_options['fields']['field_date']['group_rows'] = FALSE;
   $handler->display->display_options['fields']['field_date']['delta_limit'] = '1';
   $handler->display->display_options['fields']['field_date']['delta_offset'] = '0';
+  /* Field: Content: Extension */
+  $handler->display->display_options['fields']['field_extension']['id'] = 'field_extension';
+  $handler->display->display_options['fields']['field_extension']['table'] = 'field_data_field_extension';
+  $handler->display->display_options['fields']['field_extension']['field'] = 'field_extension';
+  $handler->display->display_options['fields']['field_extension']['label'] = '';
+  $handler->display->display_options['fields']['field_extension']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_extension']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['field_extension']['alter']['text'] = 'Call 715.952.9020 ext. [field_extension] or Text [field_extension] to 715.952.9020';
+  $handler->display->display_options['fields']['field_extension']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_extension']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['field_extension']['settings'] = array(
+    'prefix_suffix' => 1,
+    'status_display' => '0',
+  );
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title_1']['id'] = 'title_1';
+  $handler->display->display_options['fields']['title_1']['table'] = 'node';
+  $handler->display->display_options['fields']['title_1']['field'] = 'title';
+  $handler->display->display_options['fields']['title_1']['relationship'] = 'field_location_reference_nid';
+  $handler->display->display_options['fields']['title_1']['label'] = '';
+  $handler->display->display_options['fields']['title_1']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['title_1']['alter']['text'] = '<div class="inner">
+[field_date]<br />
+[field_extension]<br />
+[title_1]
+</div>';
+  $handler->display->display_options['fields']['title_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title_1']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['title_1']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['title_1']['link_to_node'] = FALSE;
   /* Field: Content: Description */
   $handler->display->display_options['fields']['body']['id'] = 'body';
   $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
@@ -117,6 +113,12 @@ function inc_event_views_default_views() {
   $handler->display->display_options['fields']['body']['label'] = '';
   $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['body']['type'] = 'text_plain';
+  /* Field: Content: Service links */
+  $handler->display->display_options['fields']['service_links']['id'] = 'service_links';
+  $handler->display->display_options['fields']['service_links']['table'] = 'node';
+  $handler->display->display_options['fields']['service_links']['field'] = 'service_links';
+  $handler->display->display_options['fields']['service_links']['label'] = '';
+  $handler->display->display_options['fields']['service_links']['element_label_colon'] = FALSE;
   /* Sort criterion: Content: Date -  start date (field_date) */
   $handler->display->display_options['sorts']['field_date_value']['id'] = 'field_date_value';
   $handler->display->display_options['sorts']['field_date_value']['table'] = 'field_data_field_date';
@@ -204,17 +206,30 @@ function inc_event_views_default_views() {
   /* Display: Page: With map attachment */
   $handler = $view->new_display('page', 'Page: With map attachment', 'page_4');
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['style_plugin'] = 'semanticviews_default';
+  $handler->display->display_options['style_options']['list']['class'] = 'event-teaser';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
-  $handler->display->display_options['row_plugin'] = 'ds';
-  $handler->display->display_options['row_options']['load_comments'] = 0;
-  $handler->display->display_options['row_options']['alternating'] = 0;
-  $handler->display->display_options['row_options']['grouping'] = 0;
-  $handler->display->display_options['row_options']['advanced'] = 0;
-  $handler->display->display_options['row_options']['delta_fieldset']['delta_fields'] = array();
-  $handler->display->display_options['row_options']['grouping_fieldset']['group_field'] = 'field_data_field_date|field_date_value';
-  $handler->display->display_options['row_options']['default_fieldset']['view_mode'] = 'teaser';
+  $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
+  $handler->display->display_options['row_options']['skip_blank'] = 0;
+  $handler->display->display_options['row_options']['semantic_html'] = array(
+    'title' => array(
+      'element_type' => 'h2',
+      'class' => 'title',
+    ),
+    'title_1' => array(
+      'element_type' => 'div',
+      'class' => 'teaser-meta',
+    ),
+    'body' => array(
+      'element_type' => 'div',
+      'class' => 'teaser-description',
+    ),
+    'service_links' => array(
+      'element_type' => 'div',
+      'class' => 'teaser-links',
+    ),
+  );
   $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['exposed_block'] = TRUE;
   $handler->display->display_options['path'] = 'upcoming';
