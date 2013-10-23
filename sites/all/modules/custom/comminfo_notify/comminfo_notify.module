@@ -2,20 +2,27 @@
 
 /**
  * @file
- *   Custom module to send taxonomy term notifications.
+ * Custom module to send taxonomy term notifications.
  */
 
+/**
+ * Implements hook_cron().
+ *
+ * Send SMS messages to all users with flags on SMS topics if there is an event
+ * tomorrow.
+ */
 function comminfo_notify_cron() {
   $sms = array();
-  $tids = array(1, 2, 3, 4, 5); // get tid in vid 1
+  // Get tid in vid 1.
+  $tids = array(1, 2, 3, 4, 5);
   foreach ($tids as $tid) {
-    // tomorrows events
+    // Tomorrows events.
     $view = views_get_view('upcoming_bulletin');
     $view->set_display('attachment_1');
     $view->set_arguments(array($tid));
     $view->execute();
     $events = $view->result;
-    if (! count($events)) {
+    if (!count($events)) {
       continue;
     }
 
@@ -30,7 +37,7 @@ function comminfo_notify_cron() {
       }
     }
 
-    // users to notify
+    // Users to notify.
     $user_flags = flag_get_entity_flags('taxonomy_term', $tid, 'sms_topic_updates');
 
     foreach ($user_flags as $uid => $flag) {
@@ -54,5 +61,50 @@ function comminfo_notify_cron() {
     $call->setDestNumber($number);
     $voip_server = voip_default_server();
     $response = $voip_server->send_text($message, $call);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add topic flag options to the user register form.
+ */
+function comminfo_notify_form_user_register_form_alter(&$form, &$form_state) {
+  $default_value = array();
+
+  // @todo Retrieve this.
+  $topics = array(
+    '1' => 'Employment',
+    '2' => 'Food',
+    '3' => 'Health',
+    '5' => 'Fun and Family',
+    '4' => 'Other',
+  );
+
+  $form['comminfo_notify'] = array(
+    '#type' => 'fieldset',
+    '#description' => t('Select topics to receive SMS event reminders.'),
+    '#weight' => 6,
+  );
+  $form['comminfo_notify']['comminfo_topics'] = array(
+    '#type' => 'checkboxes',
+    '#options' => $topics,
+    '#default_value' => $default_value,
+  );
+}
+
+/**
+ * Implements hook_user_insert().
+ * 
+ * Add user flags to topics for topic subscriptions.
+ */
+function comminfo_notify_user_insert(&$edit, $account, $category) {
+  if (isset($edit['comminfo_topics'])) {
+    $tids = array_keys(array_filter($edit['comminfo_topics']));
+    if (!empty($tids)) {
+      foreach ($tids as $tid) {
+        flag('flag', 'sms_topic_updates', $tid, $account);
+      }
+    }
   }
 }
