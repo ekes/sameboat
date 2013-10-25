@@ -172,11 +172,16 @@ function comminfo_notify_voipscript_incoming_sms_parse($msg, $from) {
   }
 
   $user = entity_load('user', array(key($entity_array['user'])));
-  if ($msg == 'STOP') {
+  if (strtoupper($msg) == 'STOP') {
     // @todo Yes really! Check it is just a user subscribed to SMS and not
     // something important. We're being trusting (aka insecure) already!
     user_delete($user->uid);
     return t('You have been unsubscribed from updates.');
+  }
+
+  // Send event details for an extension.
+  if (is_numeric($msg)) {
+    return incourage_events_sms_reply($msg);
   }
 
   return t("To stop receiving messages send the message 'STOP'");
