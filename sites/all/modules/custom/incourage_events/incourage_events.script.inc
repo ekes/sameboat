@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * Voipscripts for events.
+ */
+
+/**
+ * VoIP script callback: Read event node.
+ */
+function _incourage_events_event_script($node, $caller = '') {
+  $script = new VoipScript('incourage_event');
+
+  $script->addLabel('introduction');
+
+  if (!empty($node->field_location_reference['und'][0]['nid'])) {
+    $location_node = node_load($node->field_organiser_reference['und'][0]['nid']);
+    $location = $location_node->title . ', ' . $location_node->field_address_street['und'][0]['value'] . ', ' . $location_node->field_address_city['und'][0]['value'];
+    $phone = $location_node->field_phone_text['und'][0]['value'];
+  }
+  else {
+    $location = $node->field_location['und'][0]['value'];
+  }
+
+  if ($title = $node->title) {
+    $script->addSay($title) . '. ';
+  }
+
+  $body .= strip_tags($node->body['und'][0]['value']) . '. ';
+  // To get the next date re-use the logic in date_token_repeat.
+  $date_text = 'This event happens on [field_date-next-type:monthdaytime]';
+  $body .= token_replace($date_text, array('global' => NULL, 'node' => $node));
+  $body .= 'at ' . strip_tags($location) . '. ';
+  $script->addSay($body);
+
+  if ($caller == 'view_upcoming') {
+    $return_string = 'To go to the next event';
+  }
+  else {
+    $return_string = 'To return to the previous menu';
+  }
+
+  $script->addLabel('options');
+  $script->addBeep();
+  $script->addSay('Event menu: ');
+  $invalid_input_msg = t('Invalid input. Please try again.');
+  if (empty($phone)) {
+    $script->addRunIvrMenu(
+      t('To hear details again, dial 1. To receive an SMS of details, dial 2. ' . $return_string . ' press the # key.'),
+      array(1 => 'introduction', 2 => 'sms', '#' => 'return'),
+      $invalid_input_msg, NULL, 3
+    );
+  }
+  else {
+    $script->addRunIvrMenu(
+      t('To hear details again, dial 1. To receive an SMS of details, dial 2. To contact the organizers dial 3. ' . $return_string . ' press the # key.'),
+      array(1 => 'introduction', 2 => 'sms', 3 => 'contact', '#' => 'return'),
+      $invalid_input_msg, NULL, 3
+    );
+  }
+  $script->addGoto('%ivr_option_selected');
+  $script->addGoto('return');
+
+  $script->addLabel('sms');
+  $msg = incourage_events_format_sms($node);
+  $script->addSendText($msg);
+  $script->addSay(t('Message sent.'));
+  $script->addGoto('options');
+
+  $script->addLabel('contact');
+  $script->addSay(t('Transfering your call.'));
+  $script->addDial($phone);
+  $script->addGoto('options');
+
+  $script->addLabel('no_input_received');
+  $script->addSay('No input recognised. Returning to previous menu');
+  $script->addLabel('return');
+  return $script;
+}

@@ -1,0 +1,115 @@
+<?php
+
+/**
+ * @file
+ * Events voipscript and sms handling.
+ */
+
+/**
+ * Implements hook_voipscript_load_script().
+ */
+function incourage_events_voipscript_load_script($script_name, $params = NULL) {
+  if ($script_name == 'incourage_event') {
+    module_load_include('inc', 'incourage_events', 'incourage_events.script');
+    $caller = empty($params['caller']) ? '' : $params['caller'];
+    $node = node_load($params['entity_id']);
+    return _incourage_events_event_script($node, $caller);
+  }
+}
+
+/**
+ * Implements hook_voipscript_get_script_names().
+ */
+function incourage_events_voipscript_get_script_names() {
+  return array(
+    'incourage_event',
+  );
+}
+
+/**
+ * Helper function return event extension sms msg.
+ */
+function incourage_events_sms_reply($extension) {
+  list($entity_type, $entity) = voipextension_get_entity('field_extension', $extension);
+  if (!empty($entity)) {
+    $msg = '';
+    $msg = incourage_events_format_sms($entity);
+  }
+  else {
+    $msg = 'Unknown event extension.';
+  }
+
+  return $msg;
+}
+
+/**
+ * Format SMS text for an event.
+ *
+ * @todo get the phone number from the variables?
+ */
+function incourage_events_format_sms($node) {
+  if (!empty($node->field_sms_text['und'][0]['value'])) {
+    $msg = $node->field_sms_text['und'][0]['value'];
+  }
+  else {
+    list($location, $phone) = _incourage_events_location($node);
+    $msg .= $node->field_cost['und'][0]['value'];
+    $msg = "[title-raw]. [field_cost-raw]. [field_date-next-type:sms]. $location 715.952.9020 ext. " . $node->field_extension['und'][0]['value'];
+    $msg = token_replace($msg, array('global' => NULL, 'node' => $node));
+    $msg = strip_tags($msg);
+  }
+
+  return $msg;
+}
+
+/**
+ * Helper function to return correct location information.
+ */
+function _incourage_events_location($node) {
+  if (!empty($node->field_location_reference['und'][0]['nid'])) {
+    $location_node = node_load($node->field_location_reference['und'][0]['nid']);
+    $location = $location_node->title . ', ' . $location_node->field_address_street['und'][0]['value'] . ', ' . $location_node->field_address_city['und'][0]['value'] . '. ';
+    $phone = $location_node->field_phone_text['und'][0]['value'];
+  }
+  else {
+    $location = $node->field_location['und'][0]['value'];
+    $phone = '';
+  }
+
+  return array($location, $phone);
+}
+
+/**
+ * Nasty short cut for notifications text. We create
+ * a custom token to inclued all the logic we require
+ * for selecting what is in the SMS. token_logic would
+ * be the alternative if it was still about. Downside
+ * here is it is difficult for a site admin to change the
+ * text; but as it's custom anyway.
+ */
+
+/**
+ * Implements hook_token_list().
+ */
+function incourage_events_token_list($type = 'all') {
+  $tokens = array();
+
+  if ($type == 'node' || $type == 'all') {
+    $tokens['node']['incourage-events-sms'] = t("Custom event SMS content.");
+  }
+
+  return $tokens;
+}
+
+/**
+ * Implements hook_token_values().
+ */
+function incourage_events_token_values($type, $object = NULL, $options = array()) {
+  $values = array();
+
+  if ($type == 'node' && !empty($object) && $object->type == 'event') {
+    $values['incourage-events-sms'] = incourage_events_format_sms($object);
+  }
+
+  return $values;
+}
