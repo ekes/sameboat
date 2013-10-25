@@ -214,5 +214,4 @@ function comminfo_notify_form_user_register_validate($form, &$form_state) {
   if (substr(trim($form_state['values']['field_sms_number']['und'][0]['vnid']), 0, 2) != '+1') {
     $form_state['values']['field_sms_number']['und'][0]['vnid'] = '+1' . $form_state['values']['field_sms_number']['und'][0]['vnid'];
   }
-  dsm($form_state);
 }
