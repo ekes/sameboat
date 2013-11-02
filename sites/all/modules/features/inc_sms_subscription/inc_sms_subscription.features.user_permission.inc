@@ -24,28 +24,37 @@ function inc_sms_subscription_user_default_permissions() {
   // Exported permission: 'delete any sms_subscriber content'.
   $permissions['delete any sms_subscriber content'] = array(
     'name' => 'delete any sms_subscriber content',
-    'roles' => array(),
+    'roles' => array(
+      'technical administrator' => 'technical administrator',
+    ),
     'module' => 'node',
   );
 
   // Exported permission: 'delete own sms_subscriber content'.
   $permissions['delete own sms_subscriber content'] = array(
     'name' => 'delete own sms_subscriber content',
-    'roles' => array(),
+    'roles' => array(
+      'authenticated user' => 'authenticated user',
+      'technical administrator' => 'technical administrator',
+    ),
     'module' => 'node',
   );
 
   // Exported permission: 'edit any sms_subscriber content'.
   $permissions['edit any sms_subscriber content'] = array(
     'name' => 'edit any sms_subscriber content',
-    'roles' => array(),
+    'roles' => array(
+      'technical administrator' => 'technical administrator',
+    ),
     'module' => 'node',
   );
 
   // Exported permission: 'edit own sms_subscriber content'.
   $permissions['edit own sms_subscriber content'] = array(
     'name' => 'edit own sms_subscriber content',
-    'roles' => array(),
+    'roles' => array(
+      'technical administrator' => 'technical administrator',
+    ),
     'module' => 'node',
   );
 
