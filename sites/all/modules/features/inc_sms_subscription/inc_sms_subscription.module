@@ -7,12 +7,26 @@
 include_once 'inc_sms_subscription.features.inc';
 
 /**
+ * Implements hook_cronapi().
+ *
+ * Elysia cron extension.
+ */
+function inc_sms_subscription_cronapi($op, $job = NULL) {
+  $items['inc_sms_subscription_send_cron'] = array(
+    'description' => 'Send SMS notifications',
+    'rule' => '0 20 * * *',
+  );
+
+  return $items;
+}
+
+/**
  * Implements hook_cron().
  *
  * Send SMS messages to all users with flags on SMS topics if there is an event
  * tomorrow.
  */
-function inc_sms_subscription_cron() {
+function inc_sms_subscription_send_cron() {
   $sms = array();
   // Get tid in vid 1.
   $tids = array(1, 2, 3, 4, 5);
