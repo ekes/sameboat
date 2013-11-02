@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the inc_sms_subscription feature.
+ */
+
+include_once 'inc_sms_subscription.features.inc';
