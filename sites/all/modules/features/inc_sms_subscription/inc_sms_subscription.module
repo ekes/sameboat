@@ -5,3 +5,185 @@
  */
 
 include_once 'inc_sms_subscription.features.inc';
+
+/**
+ * Implements hook_cron().
+ *
+ * Send SMS messages to all users with flags on SMS topics if there is an event
+ * tomorrow.
+ */
+function inc_sms_subscription_cron() {
+  $sms = array();
+  // Get tid in vid 1.
+  $tids = array(1, 2, 3, 4, 5);
+  foreach ($tids as $tid) {
+    // Tomorrows events.
+    $view = views_get_view('upcoming_bulletin');
+    $view->set_display('attachment_1');
+    $view->set_arguments(array($tid));
+    $view->execute();
+    $events = $view->result;
+    if (!count($events)) {
+      continue;
+    }
+
+    $messages = array();
+    foreach ($events as $event) {
+      $node = node_load($event->nid);
+      if (count($node->field_sms_text)) {
+        $messages[$node->nid] = 'Event tomorrow: ' . $node->field_sms_text['und'][0]['value'];
+      }
+      else {
+        $messages[$node->nid] = 'Event tomorrow: ' . $node->title . ' Extension: ' . $node->field_extension['und'][0]['value'];
+      }
+    }
+
+    $efq = new EntityFieldQuery();
+    $efq->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'sms_subscriber')
+      ->fieldCondition('field_topic_subscriptions', 'tid', $tid);
+    $result = $efq->execute();
+    if (empty($result['node'])) {
+      continue;
+    }
+    $nids = array_keys($result['node']);
+
+    foreach ($nids as $nid) {
+      $user = node_load($nid);
+      if (isset($user->field_mobile_number['und'][0]['vnid'])) {
+        // Phone number not loaded yet.
+        $number = db_query('SELECT phone_number FROM voipnumber WHERE vnid = :vnid', array('vnid' => $user->field_mobile_number['und'][0]['vnid']))->fetchField();
+        if (is_array($sms[$number])) {
+          $sms[$number] += $messages;
+        }
+        else {
+          $sms[$number] = $messages;
+        }
+      }
+    }
+  }
+
+  // Send text. Opting for immediate for now, could be queued.
+  foreach ($sms as $number => $message) {
+    $call = new VoipCall(array());
+    $call->setDestNumber($number);
+    $voip_server = voip_default_server();
+    $response = $voip_server->send_text($message, $call);
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function inc_sms_subscription_node_insert($node) {
+  // Notify user at actually stored number. Is it stored yet?
+  $voipnumber = VoipNumber::load($node->field_mobile_number['und'][0]['vnid']);
+  if ($voipnumber) {
+    $smsnumber = $voipnumber->getNumber();
+    $txt = 'You have subscribed to incourage updates: ';
+    $txt .= '';
+    $txt .= 'To unsubscribe text \'STOP\' to xxx-xxx-xxxx';
+    $call = new VoipCall(array());
+    $call->setDestNumber($smsnumber);
+    $voip_server = voip_default_server();
+    $response = $voip_server->send_text($txt, $call);
+  }
+}
+
+/**
+ * Implements hook_element_info_alter().
+ *
+ * Add our own defaults to the voipnumberfield widget.
+ */
+function inc_sms_subscription_element_info_alter(&$type) {
+  $type['voipphonenumber_widget']['#process'][] = 'inc_sms_subscription_voipnumber_widget_process';
+}
+
+/**
+ * Implements hook_voipscript_get_script_names().
+ */
+function inc_sms_subscription_voipscript_get_script_names() {
+  return array(
+    'inc_sms_subscription_incoming_sms',
+  );
+}
+
+/**
+ * Implements hook_voipscript_load_script().
+ */
+function inc_sms_subscription_voipscript_load_script($script_name, $params = NULL) {
+  if ($script_name == 'inc_sms_subscription_incoming_sms') {
+    $script = new VoipScript('inc_sms_subscription_incoming_sms');
+    $script->addSet('request_result', '^inc_sms_subscription_voipscript_incoming_sms_parse(%inbound_text_contents, %caller_number)');
+    $script->addSendText('%request_result');
+    $script->addHangup('reset');
+    return $script;
+  }
+}
+
+/**
+ * VoipScript callback.
+ *
+ * Handle incoming SMS.
+ * @todo be developed: more options, check unsubscription.
+ */
+function inc_sms_subscription_voipscript_incoming_sms_parse($msg, $from) {
+  $msg = trim($msg);
+  if (empty($msg)) {
+    return t('Empty message received.');
+  }
+
+  // Send event details for an extension.
+  if (is_numeric($msg)) {
+    return incourage_events_sms_reply($msg);
+  }
+
+  $entity_array = voipnumberfield_get_entity_by_number('node', 'field_mobile_number', $from);
+  if (empty($entity_array['user'])) {
+    return t('Phone number not recognised. Registration by SMS yet to be implemented.');
+  }
+
+  $user = entity_load('user', array(key($entity_array['user'])));
+  if ($msg == 'STOP') {
+    // @todo Yes really! Check it is just a user subscribed to SMS and not
+    // something important. We're being trusting (aka insecure) already!
+    user_delete($user->uid);
+    return t('You have been unsubscribed from updates.');
+  }
+
+  return t("To stop receiving messages send the message 'STOP'");
+}
+
+/**
+ * Voiphonenumber_widget hook_element_info_alter #process callback.
+ *
+ * Custom default phone number element.
+ */
+function inc_sms_subscription_voipnumber_widget_process($element, $form_state, $complete_form) {
+  $element['default'] = array(
+    '#type' => 'hidden',
+    '#value' => 1,
+  );
+  $element['type'] = array(
+    '#type' => 'hidden',
+    '#value' => 3,
+  );
+  $element['country'] = array(
+    '#type' => 'hidden',
+    '#value' => 'United States',
+  );
+  return $element;
+}
+
+/**
+ * Voiphonenumber_widget hook_element_info_alter #element_validate callback.
+ *
+ * Add US code if required.
+ */
+function inc_sms_subscription_form_user_register_validate($form, &$form_state) {
+  // Really basic start this one. But it should work for most cases along with
+  // the validation done by voipnumber itself.
+  if (substr(trim($form_state['values']['field_mobile_number']['und'][0]['vnid']), 0, 2) != '+1') {
+    $form_state['values']['field_mobile_number']['und'][0]['vnid'] = '+1' . $form_state['values']['field_mobile_number']['und'][0]['vnid'];
+  }
+}
