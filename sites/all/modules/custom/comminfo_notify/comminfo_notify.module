@@ -37,16 +37,23 @@ function comminfo_notify_cron() {
       }
     }
 
-    // Users to notify.
-    $user_flags = flag_get_entity_flags('taxonomy_term', $tid, 'sms_topic_updates');
+    $efq = new EntityFieldQuery();
+    $efq->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'sms_subscriber')
+      ->fieldCondition('field_topic_subscriptions', 'tid', $tid);
+    $result = $efq->execute();
+    if (empty($result['node'])) {
+      continue;
+    }
+    $nids = array_keys($result['node']);
 
-    foreach ($user_flags as $uid => $flag) {
-      $user = user_load($uid);
-      if (isset($user->field_sms_number['und'][0]['vnid'])) {
+    foreach ($nids as $nid) {
+      $user = node_load($nid);
+      if (isset($user->field_mobile_number['und'][0]['vnid'])) {
         // Phone number not loaded yet.
-        $number = db_query('SELECT phone_number FROM voipnumber WHERE vnid = :vnid', array('vnid' => $user->field_sms_number['und'][0]['vnid']))->fetchField();
+        $number = db_query('SELECT phone_number FROM voipnumber WHERE vnid = :vnid', array('vnid' => $user->field_mobile_number['und'][0]['vnid']))->fetchField();
         if (is_array($sms[$number])) {
-          $sms[$number] = array_merge($sms[$number], $messages);
+          $sms[$number] += $messages;
         }
         else {
           $sms[$number] = $messages;
@@ -65,62 +72,21 @@ function comminfo_notify_cron() {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
- *
- * Add topic flag options to the user register form.
- * Default telephone number settings for this site.
+ * Implements hook_node_insert().
  */
-function comminfo_notify_form_user_register_form_alter(&$form, &$form_state) {
-  $default_value = array();
-
-  // @todo Retrieve this.
-  $topics = array(
-    '1' => 'Employment',
-    '2' => 'Food',
-    '3' => 'Health',
-    '5' => 'Fun and Family',
-    '4' => 'Other',
-  );
-
-  $form['comminfo_notify'] = array(
-    '#type' => 'fieldset',
-    '#description' => t('Select topics to receive SMS event reminders.'),
-    '#weight' => 6,
-  );
-  $form['comminfo_notify']['comminfo_topics'] = array(
-    '#type' => 'checkboxes',
-    '#options' => $topics,
-    '#default_value' => $default_value,
-  );
-  $form['#validate'][] = 'comminfo_notify_form_user_register_validate';
-}
-
-/**
- * Implements hook_user_insert().
- * 
- * Add user flags to topics for topic subscriptions, and notifies SMS number
- * of subscriptions.
- */
-function comminfo_notify_user_insert(&$edit, $account, $category) {
-  if (isset($edit['comminfo_topics'])) {
-    $tids = array_keys(array_filter($edit['comminfo_topics']));
-    if (!empty($tids)) {
-      foreach ($tids as $tid) {
-        flag('flag', 'sms_topic_updates', $tid, $account);
-      }
-    }
+function comminfo_notify_node_insert($node) {
+  // Notify user at actually stored number. Is it stored yet?
+  $voipnumber = VoipNumber::load($node->field_mobile_number['und'][0]['vnid']);
+  if ($voipnumber) {
+    $smsnumber = $voipnumber->getNumber();
+    $txt = 'You have subscribed to incourage updates: ';
+    $txt .= '';
+    $txt .= 'To unsubscribe text \'STOP\' to xxx-xxx-xxxx';
+    $call = new VoipCall(array());
+    $call->setDestNumber($smsnumber);
+    $voip_server = voip_default_server();
+    $response = $voip_server->send_text($txt, $call);
   }
-
-  // Notify user at actually stored number.
-  $voipnumber = VoipNumber::load($account->field_sms_number['und'][0]['vnid']);
-  $smsnumber = $voipnumber->getNumber();
-  $txt = 'You have subscribed to incourage updates: ';
-  $txt .= '';
-  $txt .= 'To unsubscribe text \'STOP\' to xxx-xxx-xxxx';
-  $call = new VoipCall(array());
-  $call->setDestNumber($smsnumber);
-  $voip_server = voip_default_server();
-  $response = $voip_server->send_text($txt, $call);
 }
 
 /**
@@ -166,7 +132,12 @@ function comminfo_notify_voipscript_incoming_sms_parse($msg, $from) {
     return t('Empty message received.');
   }
 
-  $entity_array = voipnumberfield_get_entity_by_number('user', 'field_sms_number', $from);
+  // Send event details for an extension.
+  if (is_numeric($msg)) {
+    return incourage_events_sms_reply($msg);
+  }
+
+  $entity_array = voipnumberfield_get_entity_by_number('node', 'field_mobile_number', $from);
   if (empty($entity_array['user'])) {
     return t('Phone number not recognised. Registration by SMS yet to be implemented.');
   }
@@ -216,7 +187,7 @@ function comminfo_notify_voipnumber_widget_process($element, $form_state, $compl
 function comminfo_notify_form_user_register_validate($form, &$form_state) {
   // Really basic start this one. But it should work for most cases along with
   // the validation done by voipnumber itself.
-  if (substr(trim($form_state['values']['field_sms_number']['und'][0]['vnid']), 0, 2) != '+1') {
-    $form_state['values']['field_sms_number']['und'][0]['vnid'] = '+1' . $form_state['values']['field_sms_number']['und'][0]['vnid'];
+  if (substr(trim($form_state['values']['field_mobile_number']['und'][0]['vnid']), 0, 2) != '+1') {
+    $form_state['values']['field_mobile_number']['und'][0]['vnid'] = '+1' . $form_state['values']['field_mobile_number']['und'][0]['vnid'];
   }
 }
