@@ -1,4 +1,0 @@
-name = SMS event notifications.
-description = User subscriptions to topics to receive notifications.
-core = 7.x
-dependencies[] = voipnumberfield
