@@ -532,7 +532,7 @@ function voipqueue_add_text($number, $text, $options = array()) {
 
   // Add options if they are required.
   if (isset($options['delay'])) {
-    $item->setDelay($delay);
+    $item->setDelay($options['delay']);
   }
   if (isset($options['tags'])) {
     $item->tags = $options['tags'];
