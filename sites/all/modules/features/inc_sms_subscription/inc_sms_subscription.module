@@ -79,10 +79,7 @@ function inc_sms_subscription_send_cron() {
 
   // Send text. Opting for immediate for now, could be queued.
   foreach ($sms as $number => $message) {
-    $call = new VoipCall(array());
-    $call->setDestNumber($number);
-    $voip_server = voip_default_server();
-    $response = $voip_server->send_text($message, $call);
+    voipqueue_add_text($number, $message);
   }
 }
 
