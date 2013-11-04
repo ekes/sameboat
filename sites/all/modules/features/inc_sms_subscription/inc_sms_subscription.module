@@ -153,16 +153,14 @@ function inc_sms_subscription_voipscript_incoming_sms_parse($msg, $from) {
     return incourage_events_sms_reply($msg);
   }
 
-  $entity_array = voipnumberfield_get_entity_by_number('node', 'field_mobile_number', $from);
-  if (empty($entity_array['user'])) {
+  $entity_array = voipnumberfield_get_instance_by_number('node', 'field_mobile_number', '+' . $from);
+  if (empty($entity_array['node'])) {
     return t('Phone number not recognised. Registration by SMS yet to be implemented.');
   }
 
-  $user = entity_load('user', array(key($entity_array['user'])));
-  if ($msg == 'STOP') {
-    // @todo Yes really! Check it is just a user subscribed to SMS and not
-    // something important. We're being trusting (aka insecure) already!
-    user_delete($user->uid);
+  $node = node_load(key($entity_array['node']));
+  if (strtoupper($msg) == 'STOP') {
+    node_delete($node->nid);
     return t('You have been unsubscribed from updates.');
   }
 
