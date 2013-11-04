@@ -78,8 +78,12 @@ function inc_sms_subscription_send_cron() {
   }
 
   // Send text. Opting for immediate for now, could be queued.
-  foreach ($sms as $number => $message) {
-    voipqueue_add_text($number, $message);
+  foreach ($sms as $number => $messages) {
+    // @todo could put a limit on the number of messages sent per-number? Or
+    // concate them (but text is generally a full message worth).
+    foreach ($messages as $message) {
+      voipqueue_add_text($number, $message);
+    }
   }
 }
 
