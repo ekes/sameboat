@@ -153,7 +153,7 @@ function inc_sms_subscription_voipscript_incoming_sms_parse($msg, $from) {
     return incourage_events_sms_reply($msg);
   }
 
-  $entity_array = voipnumberfield_get_instance_by_number('node', 'field_mobile_number', '+' . $from);
+  $entity_array = voipnumberfield_get_instance_by_number('node', 'field_mobile_number', VoipCall::NormalizeNumber($from));
   if (empty($entity_array['node'])) {
     return t('Phone number not recognised. Registration by SMS yet to be implemented.');
   }
