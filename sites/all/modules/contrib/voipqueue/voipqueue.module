@@ -25,6 +25,7 @@ define('VOIPQUEUE_STATUS_DELAYED', -2);
  */
 function voipqueue_enable() {
   variable_set('queue_class_voipqueue_calls', 'VoipQueue');
+  variable_set('queue_class_voipblast_texts', 'VoipQueue');
 }
 
 /**
