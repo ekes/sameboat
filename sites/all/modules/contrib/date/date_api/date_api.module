@@ -2173,7 +2173,6 @@ function date_limit_format($format, $granularity) {
   if (empty($test)) {
     $format = '';
   }
-  $cache[$original_format . print_r($granularity, true)] = $format;
   return $format;
 }
 
