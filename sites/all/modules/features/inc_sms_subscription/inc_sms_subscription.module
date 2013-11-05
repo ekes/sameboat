@@ -95,9 +95,7 @@ function inc_sms_subscription_node_insert($node) {
   $voipnumber = VoipNumber::load($node->field_mobile_number['und'][0]['vnid']);
   if ($voipnumber) {
     $smsnumber = $voipnumber->getNumber();
-    $txt = 'You have subscribed to incourage updates: ';
-    $txt .= '';
-    $txt .= 'To unsubscribe text \'STOP\' to xxx-xxx-xxxx';
+    $txt = "You have subscribed to Incourage SMS updates. To unsubscribe, text 'STOP' to <site number here>.";
     $call = new VoipCall(array());
     $call->setDestNumber($smsnumber);
     $voip_server = voip_default_server();
@@ -112,6 +110,7 @@ function inc_sms_subscription_node_insert($node) {
  */
 function inc_sms_subscription_element_info_alter(&$type) {
   $type['voipphonenumber_widget']['#process'][] = 'inc_sms_subscription_voipnumber_widget_process';
+  $type['voipphonenumber_widget']['#element_validate'][] = 'inc_sms_subscription_voipnumber_widget_validate';
 }
 
 /**
@@ -193,7 +192,7 @@ function inc_sms_subscription_voipnumber_widget_process($element, $form_state, $
  *
  * Add US code if required.
  */
-function inc_sms_subscription_form_user_register_validate($form, &$form_state) {
+function inc_sms_subscription_voipnumber_widget_validate($element, &$form_state) {
   // Really basic start this one. But it should work for most cases along with
   // the validation done by voipnumber itself.
   if (substr(trim($form_state['values']['field_mobile_number']['und'][0]['vnid']), 0, 2) != '+1') {
