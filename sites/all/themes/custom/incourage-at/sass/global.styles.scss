@@ -310,7 +310,7 @@ var {
  * Logo
  */
 #logo {
-  padding: 10px 0;
+  padding: 10px 0 0 0;
 
   img {
     vertical-align: bottom;
@@ -848,7 +848,7 @@ ul.menu {
  * ========================================================================== */
 
 #breadcrumb {
-  margin: 10px 0;
+  margin: 0 0 10px 0;
   background-color: $dark-purple;
   color: white;
   font-size: .9em;
@@ -1093,6 +1093,10 @@ ul.action-links {
 .field {}
 
 
+.field h2 {
+  margin-top: 0;
+}
+
 /*
  * Above and inline classes are on the field wrapper
  */
@@ -1287,7 +1291,10 @@ ul.action-links {
   margin: 5px 0 15px 20px;
 }
 
-
+.field-name-service-links-displays-group {
+  display: inline;
+  float: right;
+}
 
 /* =============================================================================
  *   Block Styling
@@ -2025,4 +2032,15 @@ tr.error {
     min-height: 260px;
     width: auto;
   }
+}
+
+/*
+===========================================
+Stuff to move into another file
+===========================================
+*/
+
+.views-widget-filter-title, 
+.views-widget-filter-title input {
+  width: 18em;
 }
