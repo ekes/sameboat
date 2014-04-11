@@ -35,7 +35,7 @@
    * "Float Region blocks" is an extension for floating blocks in regions, see
    * your themes appearance settings, under the Extensions tab.
    */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/incourage\/drupal-7\.23\/sites\/all\/themes\/custom\/incourage-at\/sass\/responsive\.custom\.scss}line{font-family:\0000349}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/responsive\.custom\.scss}line{font-family:\0000349}}
   .region[class*="float-blocks"] .block {
     float: none;
     width: 100%;
