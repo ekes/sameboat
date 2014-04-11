@@ -6,10 +6,3 @@
 ;dependencies[] = phone
 ;package = VoIP Drupal
 ;core = 7.x
-
-; Information added by drupal.org packaging script on 2013-09-11
-version = "7.x-2.x-dev"
-core = "7.x"
-project = "voipnumber"
-datestamp = "1378901256"
-
