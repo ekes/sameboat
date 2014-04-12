@@ -15,6 +15,51 @@ function incourage_events_voipscript_load_script($script_name, $params = NULL) {
     $node = node_load($params['entity_id']);
     return _incourage_events_event_script($node, $caller);
   }
+  elseif ($script_name == 'incourage_upcoming') {
+    module_load_include('inc', 'incourage_events', 'incourage_events.script');
+    return _incourage_events_upcoming_script();
+  }
+  elseif ($script_name == 'incourage_event_read_view') {
+    module_load_include('inc', 'incourage_events', 'incourage_events.script');
+    $view_name = $params['view_name'];
+    $display_id = $params['display_id'];
+    $filters = json_decode($params['filters']);
+    return incourage_event_read_view($view_name, $display_id, $filters);
+  }
+}
+
+/**
+ * Load a view, pass to script to read.
+ *
+ * @return VoipScript
+ */
+function incourage_event_read_view($view_name, $display_id, $filters = array(), $args = array()) {
+  $view = views_get_view($view_name);
+  if (!$view || !$view->access($display_id)) {
+    $script = new VoipScript('incourage_event_error');
+    watchdog('incourage_event', 'Unable to load or access view @view_name display @display_id', array('@view_name' => $view_name, '@display_id' => $display_id), WATCHDOG_ERROR);
+    $script->addSay('There has been an error accessing the information you require. Sorry.');
+    $script->addReturn();
+    return $script;
+  }
+  if (! $view->set_display($display_id)) {
+    $script = new VoipScript('incourage_event_error');
+    watchdog('incourage_event', 'Unable to set display @display_id on view @view_name', array('@view_name' => $view_name, '@display_id' => $display_id), WATCHDOG_ERROR);
+    $script->addSay('There has been an error accessing the information you require. Sorry.');
+    $script->addReturn();
+    return $script;
+  }
+
+  if (! empty($filters)) {
+    $view->set_exposed_input($filters);
+  }
+
+  $view->pre_execute($args);
+  $view->display_handler->preview();
+  $view->post_execute();
+
+  $script = _incourage_events_read_view_script($view->result);
+  return $script;
 }
 
 /**
@@ -22,7 +67,9 @@ function incourage_events_voipscript_load_script($script_name, $params = NULL) {
  */
 function incourage_events_voipscript_get_script_names() {
   return array(
+    'incourage_upcoming',
     'incourage_event',
+    'incourage_event_read_view',
   );
 }
 
