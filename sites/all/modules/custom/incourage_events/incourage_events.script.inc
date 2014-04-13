@@ -109,9 +109,10 @@ function _incourage_events_read_view_script($view_result) {
     $script->addGoto( 'row_' . $count . '_end' );
     $script->addLabel( 'row_' . $count . '_key_1' );
     $script->addGosub(
-      'incourage_play_extension',
+      'voipextension_play_extension_script',
       array(
-          'eid' => $row->field_field_extension[0]['raw']['value'],
+        'field_name' => 'field_extension',
+        'extension_number' => $row->field_field_extension[0]['raw']['value'],
       )
     );
     $script->addLabel('row_' . $count . '_key_2');
