@@ -65,7 +65,7 @@ function _incourage_events_upcoming_script() {
   $script->addGoto('begin');
 
   $script->addLabel('extension_menu');
-  $script->addGosub('incourage_extensions');
+  $script->addGosub('voipextension_basic_menu_script');
   $script->addGoto('begin');
 
   $script->addLabel('invalid_input');
