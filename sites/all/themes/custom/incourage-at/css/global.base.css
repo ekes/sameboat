@@ -713,3 +713,23 @@ header[role=banner],
   text-align: right;
   border-bottom: 1px solid #E2E2E2;
 }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.base\.scss}line{font-family:\00003729}}
+.one-column .two-66-33 .region {
+  clear: none;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.base\.scss}line{font-family:\00003733}}
+.region-two-66-33-second .field {
+  margin-left: 1em;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.base\.scss}line{font-family:\00003737}}
+.one-column .block {
+  margin-bottom: 0;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.base\.scss}line{font-family:\00003741}}
+.one-column h2 {
+  padding-bottom: 0.5em;
+}
