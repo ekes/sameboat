@@ -11,10 +11,10 @@
 function _incourage_events_upcoming_script() {
   $script = new VoipScript('incourage_upcoming');
 
-  $script->addSay('Welcome to the Incourage events hotline.');
+  $script->addSay(v('Welcome to the What\'s Up South Wood County system.'));
 
   $script->addLabel('begin');
-  $script->addSay('Main menu.');
+  $script->addSay(v('Main menu.'));
 
   // Is there a way this could be integrated with the terms
   // themselves?
@@ -34,14 +34,14 @@ function _incourage_events_upcoming_script() {
     4 => 3,
     5 => 4,
   );
-  $prompt = '';
-  foreach ($terms as $key => $description) {
-    $prompt .= "For $description , Press $key. ";
-  }
+  $prompt = array();
   $options['*'] = 'extension_menu';
-  $prompt .= 'To go to a specific extension number, dial the star key.';
+  $prompt[] = v('To go to a specific extension number, dial the star key.');
+  foreach ($terms as $key => $description) {
+    $prompt[] = v("For $description , Press $key. ");
+  }
 
-  $script->addRunIvrMenu($prompt, $options, t('Invalid input. Please try again.'), NULL, 3);
+  $script->addRunIvrMenu($prompt, $options, v('Invalid input. Please try again.'), NULL, 3);
   // I would like to do an array_key_exists here, how to pass $options to
   // addGotoIf?
   foreach ($topics as $key => $tid) {
@@ -87,7 +87,7 @@ function _incourage_events_read_view_script($view_result) {
     $script->addSay( strip_tags($row->field_field_date[0]['rendered']['#markup']) );
     $script->addLabel( 'row_' . $count . '_menu' );
     $script->addRunIvrMenu(
-      "To hear more details press 1. To go to the next event press 2. To return to the previous menu press #. ",
+      v("To hear more details press 1. To go to the next event press 2. To return to the previous menu press #. "),
       array(
         't' =>  'no_input_received_' . $count,
         'i' => 'invalid_option_' . $count,
@@ -162,18 +162,18 @@ function _incourage_events_event_script($node, $caller = '') {
 
   $script->addLabel('options');
   $script->addBeep();
-  $script->addSay('Event menu: ');
+  $script->addSay(v('Event menu: '));
   $invalid_input_msg = t('Invalid input. Please try again.');
   if (empty($phone)) {
     $script->addRunIvrMenu(
-      t('To hear details again, dial 1. To receive an SMS of details, dial 2. ' . $return_string . ' press the # key.'),
+      v('To hear details again, dial 1. To receive an SMS of details, dial 2. ' . $return_string . ' press the # key.'),
       array(1 => 'introduction', 2 => 'sms', '#' => 'return'),
       $invalid_input_msg, NULL, 3
     );
   }
   else {
     $script->addRunIvrMenu(
-      t('To hear details again, dial 1. To receive an SMS of details, dial 2. To contact the organizers dial 3. ' . $return_string . ' press the # key.'),
+      v('To hear details again, dial 1. To receive an SMS of details, dial 2. To contact the organizers dial 3. ' . $return_string . ' press the # key.'),
       array(1 => 'introduction', 2 => 'sms', 3 => 'contact', '#' => 'return'),
       $invalid_input_msg, NULL, 3
     );
@@ -184,7 +184,7 @@ function _incourage_events_event_script($node, $caller = '') {
   $script->addLabel('sms');
   $msg = incourage_events_format_sms($node);
   $script->addSendText($msg);
-  $script->addSay(t('Message sent.'));
+  $script->addSay(v('Message sent.'));
   $script->addGoto('options');
 
   $script->addLabel('contact');
@@ -197,3 +197,95 @@ function _incourage_events_event_script($node, $caller = '') {
   $script->addLabel('return');
   return $script;
 }
+
+/**
+ * Basic default script to read voipnode contents
+ */
+function _incourage_events_location_script($node, $caller) {
+  $script = new VoipScript('incourage_location');
+
+  $script->addLabel('introduction');
+
+  $script->addSay($node->title);
+
+  $script->addLabel('menu');
+  $prompt = array();
+  $prompt[] = v('For events at this location, dial 1. ');
+  $options = array(1 => 'events');
+  if (! empty($node->field_phone_text[0]['value'])) {
+    $phone = $node->field_phone_text[0]['value'];
+    $prompt[] = v('To be redirected to the organization phone, dial the star key. ');
+    $options['*'] = 'redirect';
+  }
+  $prompt[] = v('To go back to the main menu, press the pound key. ');
+  $options['#'] = 'return';
+
+  $script->addRunIvrMenu($prompt, $options, t('Invalid input. Please try again.'), NULL, 3);
+  $script->addGoto('%ivr_option_selected');
+  $script->addGoto('return');
+
+  $script->addLabel('events');
+  $script->addGosub(
+    'incourage_event_read_view',
+    array(
+      'view_name' => 'upcoming',
+      'display_id' => 'default',
+      'filters' => json_encode(array('field_location_reference_nid' => $node->nid)),
+    )
+  );
+  $script->addGoto('menu');
+
+  $script->addLabel('redirect');
+  $script->addSay(t('Transfering your call.'));
+  $script->addDial($phone);
+  $script->addGoto('menu');
+
+  $script->addLabel('return');
+  return $script;
+}
+
+/**
+ * SMS handling.
+ */
+
+/**
+ * Voipscript callback: for sms msgs.
+ */
+function _incourage_events_sms_script() {
+  $script = new VoipScript('voipscript_events_sms');
+$script->addLog('sms: %inbound_text_contents');
+  $script->addSet('request_result', '^incourage_events_sms_parse(%inbound_text_contents, %caller_number)');
+  $script->addSendText("%request_result");
+  $script->addHangup('reset');
+  return $script;
+}
+
+/**
+ * Helper function, parse extension from sms, return msg.
+ */
+function incourage_events_sms_parse($text, $number) {
+  $msg = '';
+  // super loose regex will just match the first number (multiple digits too)
+  // in the string.
+  if (preg_match('/[0-9]+/', $text, $matches)) {
+    $eid = $matches[0];
+    // if we have an extension
+    list($entity_type, $entity) = voipextension_get_entity('field_extension', $eid);
+    if ($entity_type = 'node' && $entity->type == 'event') {
+      $msg = incourage_events_format_sms($entity);
+    }
+    elseif ($entity_type == 'node' && $entity->type == 'location') {
+      $msg = incourage_events_location_format_sms($entity);
+    }
+    // if no message we got an unknown number for extension
+    if ($msg == '') {
+      $msg = 'Incourage Events hotline. Invalid extension provided.';
+    }
+  }
+  else {
+    $msg = 'To receive details about an event or location send an SMS with the extension number in it.';
+  }
+
+  return $msg;
+}
+

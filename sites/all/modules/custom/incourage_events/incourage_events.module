@@ -15,6 +15,12 @@ function incourage_events_voipscript_load_script($script_name, $params = NULL) {
     $node = node_load($params['entity_id']);
     return _incourage_events_event_script($node, $caller);
   }
+  elseif ($script_name == 'incourage_location') {
+    module_load_include('inc', 'incourage_events', 'incourage_events.script');
+    $caller = empty($params['caller']) ? '' : $params['caller'];
+    $node = node_load($params['entity_id']);
+    return _incourage_events_location_script($node, $caller);
+  }
   elseif ($script_name == 'incourage_upcoming') {
     module_load_include('inc', 'incourage_events', 'incourage_events.script');
     return _incourage_events_upcoming_script();
@@ -23,8 +29,13 @@ function incourage_events_voipscript_load_script($script_name, $params = NULL) {
     module_load_include('inc', 'incourage_events', 'incourage_events.script');
     $view_name = $params['view_name'];
     $display_id = $params['display_id'];
-    $filters = json_decode($params['filters']);
-    return incourage_event_read_view($view_name, $display_id, $filters);
+    $filters = isset($params['filters']) ? json_decode($params['filters'], true) : array();
+    $args = isset($params['args']) ? json_decode($params['args'], true) : array();
+    return incourage_event_read_view($view_name, $display_id, $filters, $args);
+  }
+  elseif ($script_name == 'incourage_events_sms') {
+    module_load_include('inc', 'incourage_events', 'incourage_events.script');
+    return _incourage_events_sms_script();
   }
 }
 
@@ -69,7 +80,9 @@ function incourage_events_voipscript_get_script_names() {
   return array(
     'incourage_upcoming',
     'incourage_event',
+    'incourage_location',
     'incourage_event_read_view',
+    'incourage_events_sms',
   );
 }
 
@@ -101,9 +114,27 @@ function incourage_events_format_sms($node) {
   else {
     list($location, $phone) = _incourage_events_location($node);
     $msg .= $node->field_cost['und'][0]['value'];
-    $msg = "[title-raw]. [field_cost-raw]. [field_date-next-type:sms]. $location 715.952.9020 ext. " . $node->field_extension['und'][0]['value'];
+    $msg = "[node:title]. [node:field_cost]. [node:field_date]. $location 715.952.9020 ext. " . $node->field_extension['und'][0]['value'];
     $msg = token_replace($msg, array('global' => NULL, 'node' => $node));
     $msg = strip_tags($msg);
+  }
+
+  return $msg;
+}
+
+/**
+ * Format SMS text for an location.
+ */
+function incourage_events_location_format_sms($node) {
+  $msg = strip_tags($node->title) . ': ';
+  if ($node->title != $node->field_official_name[0]['value']) {
+    $msg .= strip_tags($node->field_official_name[0]['value']) . ', ';
+  }
+  if (! empty($node->field_address_street[0]['value'])) {
+    $msg .= strip_tags($node->field_address_street[0]['value']) . ',';
+  }
+  if (! empty($node->field_address_city[0]['value'])) {
+    $msg .= strip_tags($node->field_address_city[0]['value']) . ', ';
   }
 
   return $msg;
