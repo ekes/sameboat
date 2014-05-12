@@ -108,7 +108,7 @@ function voipextension_voipscript_load_script($script_name, $params = NULL) {
 
   if ($script_name == 'voipextension_default_extension_script') {
     module_load_include('inc', 'voipextension', 'voipextension.script');
-    return _voipextension_default_extension_script($params['entity_type'], $params['entity_id'], $params['field_name'], $params['extension']);
+    return _voipextension_default_extension_script($params['entity_type'], $params['entity_id'], $params['field_name'], json_decode($params['extension']));
   }
 }
 

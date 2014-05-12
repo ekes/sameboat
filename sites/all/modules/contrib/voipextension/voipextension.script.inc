@@ -50,7 +50,7 @@ function _voipextension_play_extension_script($field_name, $extension_number) {
     }
     $script->addSay($transferring);
     list($entity_id,,) = entity_extract_ids($entity_type, $entity);
-    $arguments = array('entity_type' => $entity_type, 'entity_id' => $entity_id, 'field_name' => $field_name, 'extension' => $extension);
+    $arguments = array('entity_type' => $entity_type, 'entity_id' => $entity_id, 'field_name' => $field_name, 'extension' => json_encode($extension));
     $script->addGosub($script_name, $arguments);
   }
   else {
