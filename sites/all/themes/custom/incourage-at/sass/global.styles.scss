@@ -302,7 +302,7 @@ var {
  * Wraps all the branding elements, logo, name and slogan
  */
 #branding {
-  background: url("../../../images/whats-up-header.png") no-repeat scroll right transparent;
+  background: url("../../../images/whatsup.png") no-repeat scroll left transparent;
 }
 
 
@@ -311,9 +311,15 @@ var {
  */
 #logo {
   padding: 10px 0 0 0;
+  text-align: right;
 
   img {
     vertical-align: bottom;
+  }
+
+  a {
+    width: 100%;
+    display: block;
   }
 }
 
@@ -571,7 +577,7 @@ ul.links {
  */
 .region-leaderboard {
   background-image: url('../../../images/bg-nav-utilities.png');
-  height: 26px;
+  height: 28px;
 
   ul {
    float: right;
@@ -1789,6 +1795,9 @@ a.button {
   margin: 0;
 }
 
+#edit-field-extension {
+  display: none
+}
 
 /* =============================================================================
  *   Tables
