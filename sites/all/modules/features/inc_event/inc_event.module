@@ -5,3 +5,13 @@
  */
 
 include_once 'inc_event.features.inc';
+
+/**
+ * Implements hook_form_alter().
+ */
+function inc_event_form_event_node_form_alter(&$form, &$form_state) {
+  global $user;
+  if ($user->uid == 0) {
+    drupal_set_message('Please, <a href="/user">log in</a> or <a href="/user/register">register</a> to the system before creating a new event. By doing so, you will be able to modify the event at a later time without having to ask for permissions from the system administrators.');
+  }
+}
