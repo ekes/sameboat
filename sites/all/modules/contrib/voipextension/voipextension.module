@@ -291,12 +291,36 @@ function voipextension_field_validate($entity_type, $entity, $field, $instance, 
   }
 }
 
+
+/**
+ * Implements hook_replicate_field_FIELD_TYPE().
+ *
+ * Clone entities with different id need different extensions. If the field
+ * is configured to auto generate new extensions will be created. If not
+ * it will be empty, and the site needs an additional hook to set a value.
+ */
+function voipextension_replicate_field_voipextension(&$replica, $entity_type, $field_name) {
+  foreach($replica->$field_name as $language => &$values) {
+    foreach ($values as $key => &$value) {
+      $value['value'] = '';
+    }
+  }
+}
+
 /**
  * Implements hook_field_presave().
  */
 function voipextension_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
   if ($field['settings']['auto'] && (! isset($items[0]) || $items[0]['value'] == '')) {
     $items[0]['value'] = _voipextension_generate_extension($field, $instance);
+    // Next two shouldn't be triggered but just in case, some legacy cases,
+    // fill in defaults.
+    if (!isset($items[0]['enabled'])) {
+      $items[0]['enabled'] = $instance['default_value'][0]['enabled'];
+    }
+    if (!isset($items[0]['script'])) {
+      $items[0]['script'] = $instance['default_value'][0]['script'];
+    }
   }
   // Unset any empty values for whatever reason:
   // Form, or other submission of '', or failed extension generation.
