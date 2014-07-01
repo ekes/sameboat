@@ -1,0 +1,65 @@
+diff --git a/voipnumberfield.module b/voipnumberfield.module
+index e49981f..d500e60 100644
+--- a/voipnumberfield.module
++++ b/voipnumberfield.module
+@@ -710,6 +710,7 @@ function voipnumberfield_element_info() {
+   $elements['voipphonenumber_widget'] = array(
+     '#input' => TRUE,
+     '#process' => array('voipphonenumber_widget_process'),
++    '#element_validate' => array('voipphonenumber_widget_element_validate'),
+     //'#theme' => 'link_field',
+     //'#theme_wrappers' => array('form_element'),
+   );
+@@ -717,6 +718,17 @@ function voipnumberfield_element_info() {
+ }
+ 
+ /**
++ * Voipphonenumber widget validate callback.
++ */
++function voipphonenumber_widget_element_validate($element, &$form_state) {
++  // Assign the processed value to the form state.
++  if ($element['#value']['vnid']) {
++    drupal_array_set_nested_value($form_state['values'], $element['#array_parents'], $element['#value']);
++  }
++}
++
++
++/**
+  * Process an individual element.
+  *
+  * Build the form element. When creating a form using FAPI #process,
+@@ -725,7 +737,7 @@ function voipnumberfield_element_info() {
+  * The $fields array is in $form['#field_info'][$element['#field_name']].
+  */
+ //function voipphonenumber_widget_process($element, $edit, $form_state, $form) {
+-function voipphonenumber_widget_process($element, $form_state, $complete_form) {
++function voipphonenumber_widget_process(&$element, $form_state, $complete_form) {
+   drupal_add_js(drupal_get_path('module', 'voipnumberfield') . '/voipnumberfield.js');
+   $vnid = NULL;
+   $default_number = NULL;
+@@ -752,7 +764,8 @@ function voipphonenumber_widget_process($element, $form_state, $complete_form) {
+     $type = $element["#default_value"]["advanced"]["type"];
+     $country = $element["#default_value"]["advanced"]["country"];
+   }
+-  else if (is_array($element["#value"])){
++  else if (is_array($element["#value"])) {
++    $element['#value']['vnid']  = voipnumberfield_format_number($element['#value']['vnid'], $element['#field']['settings']);
+     $default_number = $element["#value"]["vnid"];
+     $is_default =  isset($element["#value"]["advanced"]["default"]) ? $element["#value"]["advanced"]["default"] : NULL;
+     $type = $element["#value"]["advanced"]["type"];
+@@ -842,8 +855,6 @@ function voipphonenumber_widget_process($element, $form_state, $complete_form) {
+     '#default_value' => $type,
+   );
+ 
+-
+-
+   if($voipnumberfield_choice == 2) {
+     $countries = $field_settings['voipnumberfield_allowed_countries'];
+   }
+@@ -928,4 +939,4 @@ function voipnumberfield_set_target($source, $entity, $target, $value, $mapping)
+     $value = reset($value);
+   }
+   $entity->{$target}[$entity->language][0]['vnid'] = $value;
+-}
+\ No newline at end of file
++}
