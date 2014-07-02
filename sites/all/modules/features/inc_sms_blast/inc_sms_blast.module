@@ -1,0 +1,108 @@
+<?php
+/**
+ * @file
+ * Code for the SMS Blast feature.
+ */
+
+include_once 'inc_sms_blast.features.inc';
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function inc_sms_blast_entity_info_alter(&$entity_info) {
+  // Move blast creation to be under the subscribers menu.
+  foreach ($entity_info['inc_blast_sms']['bundles'] as $bundle => &$settings) {
+    $settings['crud']['add']['path'] = "admin/people/subscribers/inc-sms-blast/$bundle/add";
+    $settings['crud']['view']['path'] = "admin/people/subscribers/inc-sms-blast/%eckentity";
+    $settings['crud']['view']['entity_id'] = 4;
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ *
+ * This way save the entity; then queue it and add the items and resave it.
+ */
+function inc_sms_blast_entity_insert($entity, $type) {
+  if ($type != 'inc_blast_sms') {
+    return;
+  }
+
+  // Get message to send.
+  $message_items = field_get_items('inc_blast_sms', $entity, 'field_sms_message');
+  $message_render = field_view_value('inc_blast_sms', $entity, 'field_sms_message', $message_items[0]);
+
+  // @todo Nested HOW DEEP!
+  switch ($entity->type) {
+    case 'topic_blast':
+      // Get topic.
+      $topic_items = field_get_items('inc_blast_sms', $entity, 'field_topics');
+      $tids = array();
+      foreach ($topic_items as $topic_item) {
+        $tids[] = $topic_item['tid'];
+      }
+
+      // Get all subscriptions for the topic.
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type', 'subscriber_entity')
+        ->entityCondition('bundle', 'sms')
+        ->fieldCondition('field_enabled', 'value', 1)
+        ->fieldCondition('field_topics', 'tid', $tids, 'IN')
+        ->addMetaData('account', user_load(1));
+      $result = $query->execute();
+      if (isset($result['subscriber_entity'])) {
+        $subscriber_entity_ids = array_keys($result['subscriber_entity']);
+        $subscribers = entity_load('subscriber_entity', $subscriber_entity_ids);
+        $queue = DrupalQueue::get('voipblast_texts');
+        $queue->createQueue();
+        foreach ($subscribers as $subscriber) {
+          $call = new VoipCall(array());
+          $number_items = field_get_items('subscriber_entity', $subscriber, 'field_sms');
+          $number_render = field_view_value('subscriber_entity', $subscriber, 'field_sms', $number_items[0]);
+          $call->setDestNumber($number_render['#markup']);
+          $item = new VoipQueueText($call, $message_render['#markup']);
+          $item->tags = array('inc_blast_sms:' . $entity->id);
+          $queue->createItem($item);
+        }
+      }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render()
+ *
+ * @todo get rid of me!
+ */
+function inc_sms_blast_views_pre_render(&$view) {
+  // Hides the non-number part of the queue item title.
+  // @todo put somewhere more appropriate so future me isn't searching forever.
+  if ($view->name == 'sms_blast_queue') {
+    foreach ($view->result as $key => &$result) {
+      list($result->advancedqueue_title,) = explode(':', $result->advancedqueue_title);
+    }
+  }
+}
+
+/**
+ * Implements menu_local_task_alter().
+ */
+function inc_sms_blast_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($root_path == 'admin/people/subscribers') {
+    $item = menu_get_item('admin/people/subscribers/inc-sms-blast');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_task',
+        '#link' => $item,
+      );
+    }
+  }
+  if ($root_path == 'admin/people/subscribers/inc-sms-blast') {
+    $item = menu_get_item('admin/people/subscribers/inc-sms-blast/topic_blast/add');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+}
