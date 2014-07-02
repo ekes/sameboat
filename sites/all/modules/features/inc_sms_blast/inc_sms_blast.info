@@ -7,7 +7,6 @@ project = inc_sms_blast
 dependencies[] = ctools
 dependencies[] = eck
 dependencies[] = eck
-dependencies[] = entityreference
 dependencies[] = features
 dependencies[] = options
 dependencies[] = page_manager
