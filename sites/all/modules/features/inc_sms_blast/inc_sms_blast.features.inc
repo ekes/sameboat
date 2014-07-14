@@ -28,6 +28,18 @@ function inc_sms_blast_views_api($module = NULL, $api = NULL) {
  */
 function inc_sms_blast_eck_bundle_info() {
   $items = array(
+    'inc_blast_sms_event_blast' => array(
+      'machine_name' => 'inc_blast_sms_event_blast',
+      'entity_type' => 'inc_blast_sms',
+      'name' => 'event_blast',
+      'label' => 'Event blast',
+    ),
+    'inc_blast_sms_location_blast' => array(
+      'machine_name' => 'inc_blast_sms_location_blast',
+      'entity_type' => 'inc_blast_sms',
+      'name' => 'location_blast',
+      'label' => 'Location blast',
+    ),
     'inc_blast_sms_topic_blast' => array(
       'machine_name' => 'inc_blast_sms_topic_blast',
       'entity_type' => 'inc_blast_sms',
