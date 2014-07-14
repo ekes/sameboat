@@ -19,6 +19,32 @@ function inc_sms_blast_entity_info_alter(&$entity_info) {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function inc_sms_blast_menu_alter(&$menu) {
+  $menu['node/%views_arg/event-sms-subscribers']['access callback'] = 'inc_sms_blast_access_callback';
+  array_unshift($menu['node/%views_arg/event-sms-subscribers']['access arguments'], 1, 'event');
+  $menu['node/%views_arg/location-sms-subscribers']['access callback'] = 'inc_sms_blast_access_callback';
+  array_unshift($menu['node/%views_arg/location-sms-subscribers']['access arguments'], 1, 'location');
+}
+
+/**
+ * Access callback.
+ *
+ * And all because the event and location are different bundles, rather than
+ * just making the for node.
+ */
+function inc_sms_blast_access_callback($nid, $type) {
+  $args = func_get_args();
+  array_shift($args);
+  array_shift($args);
+  $node = node_load($nid);
+  if ($node->type != $type) {
+    return FALSE;
+  }
+  return call_user_func_array('views_access', $args);
+}
+/**
  * Implements hook_entity_insert().
  *
  * This way save the entity; then queue it and add the items and resave it.
@@ -149,7 +175,7 @@ function inc_sms_blast_menu_local_tasks_alter(&$data, $router_item, $root_path) 
         '#link' => $item,
       );
     }
-    $item = menu_get_item('node/%/event-sms-subscribers/blast-log');
+    $item = menu_get_item('node/' . $router_item['map'][1] . '/event-sms-subscribers/blast-log');
     if ($item['access']) {
       $data['actions']['output'][] = array(
         '#theme' => 'menu_local_action',
