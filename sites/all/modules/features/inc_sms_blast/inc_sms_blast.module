@@ -13,8 +13,8 @@ function inc_sms_blast_entity_info_alter(&$entity_info) {
   // Move blast creation to be under the subscribers menu.
   foreach ($entity_info['inc_blast_sms']['bundles'] as $bundle => &$settings) {
     $settings['crud']['add']['path'] = "admin/people/subscribers/inc-sms-blast/$bundle/add";
-    $settings['crud']['view']['path'] = "admin/people/subscribers/inc-sms-blast/%eckentity";
-    $settings['crud']['view']['entity_id'] = 4;
+    $settings['crud']['view']['path'] = "admin/people/subscribers/inc-sms-blast/$bundle/%eckentity";
+    $settings['crud']['view']['entity_id'] = 5;
   }
 }
 
@@ -50,21 +50,55 @@ function inc_sms_blast_entity_insert($entity, $type) {
         ->fieldCondition('field_topics', 'tid', $tids, 'IN')
         ->addMetaData('account', user_load(1));
       $result = $query->execute();
-      if (isset($result['subscriber_entity'])) {
-        $subscriber_entity_ids = array_keys($result['subscriber_entity']);
-        $subscribers = entity_load('subscriber_entity', $subscriber_entity_ids);
-        $queue = DrupalQueue::get('voipblast_texts');
-        $queue->createQueue();
-        foreach ($subscribers as $subscriber) {
-          $call = new VoipCall(array());
-          $number_items = field_get_items('subscriber_entity', $subscriber, 'field_sms');
-          $number_render = field_view_value('subscriber_entity', $subscriber, 'field_sms', $number_items[0]);
-          $call->setDestNumber($number_render['#markup']);
-          $item = new VoipQueueText($call, $message_render['#markup']);
-          $item->tags = array('inc_blast_sms:' . $entity->id);
-          $queue->createItem($item);
-        }
+       break;
+
+    case 'location_blast':
+      $location_items = field_get_items('inc_blast_sms', $entity, 'field_subscribe_locations');
+      $nids = array();
+      foreach ($location_items as $location_item) {
+        $nids[] = $location_item['nid'];
       }
+
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type', 'subscriber_entity')
+        ->entityCondition('bundle', 'sms')
+        ->fieldCondition('field_enabled', 'value', 1)
+        ->fieldCondition('field_subscribe_locations', 'nid', $nids, 'IN')
+        ->addMetaData('account', user_load(1));
+      $result = $query->execute();
+      break;
+
+    case 'event_blast':
+      $event_items = field_get_items('inc_blast_sms', $entity, 'field_subscribe_event');
+      $nids = array();
+      foreach ($event_items as $event_item) {
+        $nids[] = $event_item['nid'];
+      }
+
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type', 'subscriber_entity')
+        ->entityCondition('bundle', 'sms')
+        ->fieldCondition('field_enabled', 'value', 1)
+        ->fieldCondition('field_subscribe_event', 'nid', $nids, 'IN')
+        ->addMetaData('account', user_load(1));
+      $result = $query->execute();
+      break;
+  }
+
+  if (isset($result['subscriber_entity'])) {
+    $subscriber_entity_ids = array_keys($result['subscriber_entity']);
+    $subscribers = entity_load('subscriber_entity', $subscriber_entity_ids);
+    $queue = DrupalQueue::get('voipblast_texts');
+    $queue->createQueue();
+    foreach ($subscribers as $subscriber) {
+      $call = new VoipCall(array());
+      $number_items = field_get_items('subscriber_entity', $subscriber, 'field_sms');
+      $number_render = field_view_value('subscriber_entity', $subscriber, 'field_sms', $number_items[0]);
+      $call->setDestNumber($number_render['#markup']);
+      $item = new VoipQueueText($call, $message_render['#markup']);
+      $item->tags = array('inc_blast_sms:' . $entity->id);
+      $queue->createItem($item);
+    }
   }
 }
 
@@ -99,6 +133,61 @@ function inc_sms_blast_menu_local_tasks_alter(&$data, $router_item, $root_path) 
   if ($root_path == 'admin/people/subscribers/inc-sms-blast') {
     $item = menu_get_item('admin/people/subscribers/inc-sms-blast/topic_blast/add');
     if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+
+  if ($root_path == 'node/%/event-sms-subscribers') {
+    $item = menu_get_item('admin/people/subscribers/inc-sms-blast/event_blast/add');
+    if ($item['access']) {
+      $item['href'] .= '/' . $router_item['map'][1];
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+    $item = menu_get_item('node/%/event-sms-subscribers/blast-log');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+  if ($root_path == 'node/%/event-sms-subscribers/event_blast') {
+    $item = menu_get_item('admin/people/subscribers/inc-sms-blast/event_blast/add');
+    if ($item['access']) {
+      $item['href'] .= '/' . $router_item['map'][1];
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+  if ($root_path == 'node/%/location-sms-subscribers') {
+    $item = menu_get_item('admin/people/subscribers/inc-sms-blast/location_blast/add');
+    if ($item['access']) {
+      $item['href'] .= '/' . $router_item['map'][1];
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+    $item = menu_get_item('node/' . $router_item['map'][1] . '/location-sms-subscribers/blast-log');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+  if ($root_path == 'node/%/location-sms-subscribers/blast-log') {
+    $item = menu_get_item('admin/people/subscribers/inc-sms-blast/location_blast/add');
+    if ($item['access']) {
+      $item['href'] .= '/' . $router_item['map'][1];
       $data['actions']['output'][] = array(
         '#theme' => 'menu_local_action',
         '#link' => $item,
