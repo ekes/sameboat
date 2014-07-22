@@ -253,9 +253,19 @@ function _incourage_events_location_script($node, $caller) {
  */
 function _incourage_events_sms_script() {
   $script = new VoipScript('voipscript_events_sms');
-$script->addLog('sms: %inbound_text_contents');
+  $script->addLog('sms: %inbound_text_contents');
+  $script->addGotoIf('update_subscription', '^stripos(%inbound_text_contents, "YES")');
   $script->addSet('request_result', '^incourage_events_sms_parse(%inbound_text_contents, %caller_number)');
+  $script->addLog('sms: attempted number parsing');
   $script->addSendText("%request_result");
+  $script->addGoto('end');
+
+  $script->addLabel('update_subscription');
+  $script->addGosub('subscriber_entity_sms_receive_confirmation', array());
+  $script->addLog('sms: attempted subscription update');
+  $script->addGoto('end');
+
+  $script->addLabel('end');
   $script->addHangup('reset');
   return $script;
 }
