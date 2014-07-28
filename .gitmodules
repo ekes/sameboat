@@ -1,0 +1,3 @@
+[submodule "sites/all/modules/custom/subscriber_entity"]
+	path = sites/all/modules/custom/subscriber_entity
+	url = git://git.drupal.org/sandbox/ekes/subscriber_entity.git
