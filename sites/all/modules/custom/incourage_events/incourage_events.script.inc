@@ -153,6 +153,16 @@ function _incourage_events_event_script($node, $caller = '') {
   $body .= 'at ' . strip_tags($location) . '. ';
   $script->addSay($body);
 
+  $script->setVar('subscriber', "^subscriber_enity_sms_subscriber_number_node_subscribed(%caller_number, {$node->type}, {$node->nid})");
+  $script->addGotoIf('subscriber', "^%subscriber !== FALSE");
+  $script->addLabel('not_subscriber');
+  $script->setVar('subscribe_option', 'To subscribe to SMS announcements about this ' . $node->type . ' ');
+  $script->addGoto('next_options');
+
+  $script->addLabel('subscriber');
+  $script->setVar('subscribe_option', 'You are subscribed to announcements about this ' . $node->type . '. To unsubscribe ');
+
+  $script->addLabel('next_options');
   if ($caller == 'view_upcoming') {
     $return_string = 'To go to the next event';
   }
@@ -166,15 +176,15 @@ function _incourage_events_event_script($node, $caller = '') {
   $invalid_input_msg = t('Invalid input. Please try again.');
   if (empty($phone)) {
     $script->addRunIvrMenu(
-      v('To hear details again, dial 1. To receive an SMS of details, dial 2. ' . $return_string . ' press the # key.'),
-      array(1 => 'introduction', 2 => 'sms', '#' => 'return'),
+      v('To hear details again, dial 1. To receive an SMS of details, dial 2. %subscribe_option, dial 3. ' . $return_string . ' press the # key.'),
+      array(1 => 'introduction', 2 => 'sms', 3 => 'subscribe', '#' => 'return'),
       $invalid_input_msg, NULL, 3
     );
   }
   else {
     $script->addRunIvrMenu(
-      v('To hear details again, dial 1. To receive an SMS of details, dial 2. To contact the organizers dial 3. ' . $return_string . ' press the # key.'),
-      array(1 => 'introduction', 2 => 'sms', 3 => 'contact', '#' => 'return'),
+      v('To hear details again, dial 1. To receive an SMS of details, dial 2. To contact the organizers dial 3. %subscribe_option, dial 4. ' . $return_string . ' press the # key.'),
+      array(1 => 'introduction', 2 => 'sms', 3 => 'contact', 4 => 'subscribe', '#' => 'return'),
       $invalid_input_msg, NULL, 3
     );
   }
@@ -192,10 +202,27 @@ function _incourage_events_event_script($node, $caller = '') {
   $script->addDial($phone);
   $script->addGoto('options');
 
+  $script->addLabel('subscribe');
+  $script->setVar('subscribe_return', "^_incourage_events_toggle_sms_subscription(%caller_number, {$node->type}, {$node->nid})");
+  $script->addSay('%subscribe_return');
+  $script->addGoto('options');
+
   $script->addLabel('no_input_received');
   $script->addSay('No input recognised. Returning to previous menu');
   $script->addLabel('return');
   return $script;
+}
+
+/**
+ * Helper script to un/subscribe sms to node.
+ */
+function _incourage_events_toggle_sms_subscription($subscriber_number, $bundle, $nid) {
+  if (subscriber_entity_sms_subscriber_number_node_toggle($subscriber_number, $bundle, $nid)) {
+    return 'You are now subscribed.';
+  }
+  else {
+    return 'You are now not subscribed.';
+  }
 }
 
 /**
