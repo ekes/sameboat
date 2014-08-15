@@ -113,7 +113,6 @@ function incourage_events_format_sms($node) {
   }
   else {
     list($location, $phone) = _incourage_events_location($node);
-    $msg .= $node->field_cost['und'][0]['value'];
     $msg = "[node:title]. [node:field_cost]. [node:field_date]. $location 715.952.9020 ext. " . $node->field_extension['und'][0]['value'];
     $msg = token_replace($msg, array('global' => NULL, 'node' => $node));
     $msg = strip_tags($msg);
@@ -190,4 +189,16 @@ function incourage_events_token_values($type, $object = NULL, $options = array()
   }
 
   return $values;
+}
+
+/**
+ * Helper script to un/subscribe sms to node.
+ */
+function _incourage_events_toggle_sms_subscription($subscriber_number, $bundle, $nid) {
+  if (subscriber_entity_sms_subscriber_number_node_toggle($subscriber_number, $bundle, $nid)) {
+    return 'You are now subscribed.';
+  }
+  else {
+    return 'You are now not subscribed.';
+  }
 }
