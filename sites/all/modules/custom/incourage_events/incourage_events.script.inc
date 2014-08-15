@@ -129,10 +129,10 @@ function _incourage_events_read_view_script($view_result) {
  * VoIP script callback: Read event node.
  */
 function _incourage_events_event_script($node, $caller = '') {
-  $script = new VoipScript('incourage_event');
+  // 'constant' values for this instance of script
 
-  $script->addLabel('introduction');
-
+  // $location
+  // $phone
   if (!empty($node->field_location_reference['und'][0]['nid'])) {
     $location_node = node_load($node->field_organiser_reference['und'][0]['nid']);
     $location = $location_node->title . ', ' . $location_node->field_address_street['und'][0]['value'] . ', ' . $location_node->field_address_city['und'][0]['value'];
@@ -142,27 +142,17 @@ function _incourage_events_event_script($node, $caller = '') {
     $location = $node->field_location['und'][0]['value'];
   }
 
-  if ($title = $node->title) {
-    $script->addSay($title) . '. ';
-  }
-
-  $body .= strip_tags($node->body['und'][0]['value']) . '. ';
+  // $body
+  $body = strip_tags($node->body['und'][0]['value']) . '. ';
   // To get the next date re-use the logic in date_token_repeat.
-  $date_text = 'This event happens on [field_date-next-type:monthdaytime]';
+  $date_text = 'This event happens on [field_date:monthdaytime]';
   $body .= token_replace($date_text, array('global' => NULL, 'node' => $node));
   $body .= 'at ' . strip_tags($location) . '. ';
-  $script->addSay($body);
 
-  $script->setVar('subscriber', "^subscriber_enity_sms_subscriber_number_node_subscribed(%caller_number, {$node->type}, {$node->nid})");
-  $script->addGotoIf('subscriber', "^%subscriber !== FALSE");
-  $script->addLabel('not_subscriber');
-  $script->setVar('subscribe_option', 'To subscribe to SMS announcements about this ' . $node->type . ' ');
-  $script->addGoto('next_options');
+  // $msg
+  $msg = incourage_events_format_sms($node);
 
-  $script->addLabel('subscriber');
-  $script->setVar('subscribe_option', 'You are subscribed to announcements about this ' . $node->type . '. To unsubscribe ');
-
-  $script->addLabel('next_options');
+  // $return_string
   if ($caller == 'view_upcoming') {
     $return_string = 'To go to the next event';
   }
@@ -170,10 +160,37 @@ function _incourage_events_event_script($node, $caller = '') {
     $return_string = 'To return to the previous menu';
   }
 
+
+  //
+  // Script
+  //
+  $script = new VoipScript('incourage_event');
+
+  $script->addLabel('introduction');
+
+  if ($title = $node->title) {
+    $script->addSay($title) . '. ';
+  }
+
+  $script->addSay($body);
+
+  $script->addLabel('is_caller_subscriber');
+  $script->setVar('subscriber', "^subscriber_entity_sms_subscriber_number_node_subscribed('%caller_number', '{$node->type}', {$node->nid})");
+  // FALSE is eval'd to (string) '', otherwise string '0', '1', etc is the
+  // return value.
+  $script->addGotoIf('subscriber', "^%subscriber !== ''");
+  $script->addLabel('not_subscriber');
+  $script->addSay('You\'re not subscribed to SMS announcements about this event.');
+  $script->addGoto('options');
+
+  $script->addLabel('subscriber');
+  $script->addSay('You are subscribed to SMS announcements about this event.');
+
   $script->addLabel('options');
-  $script->addBeep();
+  // $script->addBeep();
   $script->addSay(v('Event menu: '));
-  $invalid_input_msg = t('Invalid input. Please try again.');
+
+  $invalid_input_msg = v('Invalid input. Please try again.');
   if (empty($phone)) {
     $script->addRunIvrMenu(
       v('To hear details again, dial 1. To receive an SMS of details, dial 2. %subscribe_option, dial 3. ' . $return_string . ' press the # key.'),
@@ -183,7 +200,7 @@ function _incourage_events_event_script($node, $caller = '') {
   }
   else {
     $script->addRunIvrMenu(
-      v('To hear details again, dial 1. To receive an SMS of details, dial 2. To contact the organizers dial 3. %subscribe_option, dial 4. ' . $return_string . ' press the # key.'),
+      'To hear details again, dial 1. To receive an SMS of details, dial 2. To contact the organizers dial 3. To change your SMS subscription to this event, dial 4. ' . $return_string . ' press the # key.',
       array(1 => 'introduction', 2 => 'sms', 3 => 'contact', 4 => 'subscribe', '#' => 'return'),
       $invalid_input_msg, NULL, 3
     );
@@ -192,7 +209,7 @@ function _incourage_events_event_script($node, $caller = '') {
   $script->addGoto('return');
 
   $script->addLabel('sms');
-  $msg = incourage_events_format_sms($node);
+  // Remember this is evaluated when the script is read, not run.
   $script->addSendText($msg);
   $script->addSay(v('Message sent.'));
   $script->addGoto('options');
@@ -203,26 +220,14 @@ function _incourage_events_event_script($node, $caller = '') {
   $script->addGoto('options');
 
   $script->addLabel('subscribe');
-  $script->setVar('subscribe_return', "^_incourage_events_toggle_sms_subscription(%caller_number, {$node->type}, {$node->nid})");
+  $script->setVar('subscribe_return', "^_incourage_events_toggle_sms_subscription('%caller_number', '{$node->type}', {$node->nid})");
   $script->addSay('%subscribe_return');
-  $script->addGoto('options');
+  $script->addGoto('is_caller_subscriber');
 
   $script->addLabel('no_input_received');
   $script->addSay('No input recognised. Returning to previous menu');
   $script->addLabel('return');
   return $script;
-}
-
-/**
- * Helper script to un/subscribe sms to node.
- */
-function _incourage_events_toggle_sms_subscription($subscriber_number, $bundle, $nid) {
-  if (subscriber_entity_sms_subscriber_number_node_toggle($subscriber_number, $bundle, $nid)) {
-    return 'You are now subscribed.';
-  }
-  else {
-    return 'You are now not subscribed.';
-  }
 }
 
 /**
@@ -281,7 +286,7 @@ function _incourage_events_location_script($node, $caller) {
 function _incourage_events_sms_script() {
   $script = new VoipScript('voipscript_events_sms');
   $script->addLog('sms: %inbound_text_contents');
-  $script->addGotoIf('update_subscription', '^stripos(%inbound_text_contents, "YES")');
+  $script->addGotoIf('update_subscription', '^stripos(%inbound_text_contents, "YES") !== FALSE');
   $script->addSet('request_result', '^incourage_events_sms_parse(%inbound_text_contents, %caller_number)');
   $script->addLog('sms: attempted number parsing');
   $script->addSendText("%request_result");
