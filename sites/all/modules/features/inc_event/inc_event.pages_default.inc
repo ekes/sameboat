@@ -27,24 +27,12 @@ function inc_event_default_page_manager_handlers() {
     'contexts' => array(),
     'relationships' => array(
       0 => array(
-        'context' => 'argument_nid_1',
-        'name' => 'node_from_noderef',
+        'identifier' => 'Node: Venue [field_location_reference]',
+        'keyword' => 'venue_node',
+        'name' => 'entity_from_field:field_location_reference-node-node',
+        'delta' => 0,
+        'context' => 'argument_entity_id:node_1',
         'id' => 1,
-        'identifier' => 'Venue Node from reference',
-        'keyword' => 'venue_nodereference',
-        'relationship_settings' => array(
-          'field_name' => 'field_location_reference',
-        ),
-      ),
-      1 => array(
-        'context' => 'argument_nid_1',
-        'name' => 'node_from_noderef',
-        'id' => 2,
-        'identifier' => 'Organizer Node from reference',
-        'keyword' => 'organizer_nodereference',
-        'relationship_settings' => array(
-          'field_name' => 'field_organiser_reference',
-        ),
       ),
     ),
     'access' => array(
@@ -61,6 +49,53 @@ function inc_event_default_page_manager_handlers() {
         ),
       ),
       'logic' => 'and',
+    ),
+    'metatag_panels' => array(
+      'enabled' => 1,
+      'metatags' => array(
+        'title' => array(
+          'value' => '[current-page:title]',
+        ),
+        'description' => array(
+          'value' => 'Event on [node:field_date] at [node:field-location-reference:title]',
+        ),
+        'dcterms.description' => array(
+          'value' => 'Event on [node:field_date] at [node:field-location-reference:title]',
+        ),
+        'dcterms.date' => array(
+          'value' => '[node:field-date:c]',
+        ),
+        'dcterms.type' => array(
+          'value' => 'Event',
+        ),
+        'og:description' => array(
+          'value' => 'Event on [node:field_date] at [node:field-location-reference:title]',
+        ),
+        'og:latitude' => array(
+          'value' => '[node:field-location-reference:field-point:lat]',
+        ),
+        'og:longitude' => array(
+          'value' => '[node:field-location-reference:field-point:lon]',
+        ),
+        'og:street-address' => array(
+          'value' => '[node:field-location-reference:field_address_street]',
+        ),
+        'og:locality' => array(
+          'value' => '[node:field-location-reference:field_address_city]',
+        ),
+        'og:postal-code' => array(
+          'value' => '[node:field-location-reference:field_address_postcode]',
+        ),
+        'og:phone_number' => array(
+          'value' => '715-952-9020 ext. [node:field_extension]',
+        ),
+        'twitter:title' => array(
+          'value' => '[current-page:title]',
+        ),
+        'twitter:description' => array(
+          'value' => 'On [node:field_date] at [node:field-location-reference:title] Phone 715-952-9020 ext. [node:field_extension]',
+        ),
+      ),
     ),
   );
   $display = new panels_display();
@@ -83,15 +118,20 @@ function inc_event_default_page_manager_handlers() {
     $pane = new stdClass();
     $pane->pid = 'new-1';
     $pane->panel = 'one_main';
-    $pane->type = 'node_title';
-    $pane->subtype = 'node_title';
+    $pane->type = 'node_content';
+    $pane->subtype = 'node_content';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'link' => 1,
-      'context' => 'relationship_node_from_noderef_2',
+      'links' => 0,
+      'no_extras' => 0,
       'override_title' => 1,
-      'override_title_text' => 'Organizer',
+      'override_title_text' => '',
+      'identifier' => '',
+      'link' => 0,
+      'leave_node_title' => 0,
+      'build_mode' => 'full',
+      'context' => 'argument_entity_id:node_1',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -100,30 +140,23 @@ function inc_event_default_page_manager_handlers() {
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
-    $pane->locks = '';
+    $pane->locks = array();
     $display->content['new-1'] = $pane;
     $display->panels['one_main'][0] = 'new-1';
     $pane = new stdClass();
     $pane->pid = 'new-2';
     $pane->panel = 'one_main';
     $pane->type = 'entity_field';
-    $pane->subtype = 'node:field_date';
+    $pane->subtype = 'node:field_location_reference';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'label' => 'hidden',
-      'formatter' => 'date_default',
-      'delta_limit' => '0',
+      'label' => 'inline',
+      'formatter' => 'node_reference_default',
+      'delta_limit' => 0,
       'delta_offset' => '0',
-      'delta_reversed' => 0,
-      'formatter_settings' => array(
-        'format_type' => 'long',
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_to' => '',
-        'fromto' => 'both',
-        'show_repeat_rule' => 'show',
-      ),
+      'delta_reversed' => FALSE,
+      'formatter_settings' => array(),
       'context' => 'argument_entity_id:node_1',
       'override_title' => 0,
       'override_title_text' => '',
@@ -142,22 +175,22 @@ function inc_event_default_page_manager_handlers() {
     $pane->pid = 'new-3';
     $pane->panel = 'one_main';
     $pane->type = 'entity_field';
-    $pane->subtype = 'node:field_extension';
+    $pane->subtype = 'node:field_point';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'label' => 'inline',
-      'formatter' => 'voipextension_default',
+      'label' => 'hidden',
+      'formatter' => 'geofield_openlayers',
       'delta_limit' => 0,
       'delta_offset' => '0',
       'delta_reversed' => FALSE,
       'formatter_settings' => array(
-        'prefix_suffix' => 1,
-        'status_display' => '0',
+        'data' => 'full',
+        'map_preset' => 'geofield_location_formatter_map',
       ),
-      'context' => 'argument_entity_id:node_1',
-      'override_title' => 1,
-      'override_title_text' => 'Event phone and text number',
+      'context' => 'relationship_entity_from_field:field_location_reference-node-node_1',
+      'override_title' => 0,
+      'override_title_text' => '',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -172,35 +205,13 @@ function inc_event_default_page_manager_handlers() {
     $pane = new stdClass();
     $pane->pid = 'new-4';
     $pane->panel = 'one_main';
-    $pane->type = 'node_body';
-    $pane->subtype = 'node_body';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'context' => 'argument_nid_1',
-      'override_title' => 1,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 3;
-    $pane->locks = '';
-    $display->content['new-4'] = $pane;
-    $display->panels['one_main'][3] = 'new-4';
-    $pane = new stdClass();
-    $pane->pid = 'new-5';
-    $pane->panel = 'one_main';
     $pane->type = 'entity_field';
     $pane->subtype = 'node:field_organiser_reference';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'label' => 'title',
-      'formatter' => 'node_reference_node',
+      'label' => 'inline',
+      'formatter' => 'node_reference_default',
       'delta_limit' => 0,
       'delta_offset' => '0',
       'delta_reversed' => FALSE,
@@ -209,6 +220,27 @@ function inc_event_default_page_manager_handlers() {
       ),
       'context' => 'argument_entity_id:node_1',
       'override_title' => 0,
+      'override_title_text' => 'Event organiser: %title',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 3;
+    $pane->locks = array();
+    $display->content['new-4'] = $pane;
+    $display->panels['one_main'][3] = 'new-4';
+    $pane = new stdClass();
+    $pane->pid = 'new-5';
+    $pane->panel = 'one_main';
+    $pane->type = 'block';
+    $pane->subtype = 'service_links-service_links';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 1,
       'override_title_text' => '',
     );
     $pane->cache = array();
@@ -224,23 +256,11 @@ function inc_event_default_page_manager_handlers() {
     $pane = new stdClass();
     $pane->pid = 'new-6';
     $pane->panel = 'one_main';
-    $pane->type = 'entity_field';
-    $pane->subtype = 'node:field_location_reference';
-    $pane->shown = TRUE;
+    $pane->type = 'subscribe_node';
+    $pane->subtype = 'subscribe_node';
+    $pane->shown = FALSE;
     $pane->access = array();
-    $pane->configuration = array(
-      'label' => 'title',
-      'formatter' => 'node_reference_node',
-      'delta_limit' => 0,
-      'delta_offset' => '0',
-      'delta_reversed' => FALSE,
-      'formatter_settings' => array(
-        'node_reference_view_mode' => 'teaser',
-      ),
-      'context' => 'argument_entity_id:node_1',
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
+    $pane->configuration = array();
     $pane->cache = array();
     $pane->style = array(
       'settings' => NULL,
@@ -252,7 +272,7 @@ function inc_event_default_page_manager_handlers() {
     $display->content['new-6'] = $pane;
     $display->panels['one_main'][5] = 'new-6';
   $display->hide_title = PANELS_TITLE_FIXED;
-  $display->title_pane = 'new-4';
+  $display->title_pane = '0';
   $handler->conf['display'] = $display;
   $export['node_view_panel_context_2'] = $handler;
 

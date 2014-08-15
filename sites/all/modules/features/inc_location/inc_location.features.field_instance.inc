@@ -47,7 +47,7 @@ function inc_location_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => -4,
+      'weight' => 2,
     ),
   );
 
@@ -110,7 +110,7 @@ function inc_location_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 9,
+      'weight' => 5,
     ),
     'widget_type' => 'text_textfield',
   );
@@ -129,10 +129,9 @@ function inc_location_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'text',
         'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 3,
+        'type' => 'hidden',
+        'weight' => 19,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -174,7 +173,7 @@ function inc_location_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 10,
+      'weight' => 6,
     ),
     'widget_type' => 'text_textfield',
   );
@@ -238,7 +237,7 @@ function inc_location_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 8,
+      'weight' => 4,
     ),
     'widget_type' => 'text_textfield',
   );
@@ -250,17 +249,17 @@ function inc_location_field_default_field_instances() {
       0 => array(
         'value' => '',
         'enabled' => 1,
-        'script' => '',
+        'script' => 'incourage_location',
       ),
     ),
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 7,
+        'weight' => 20,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -288,7 +287,7 @@ function inc_location_field_default_field_instances() {
       'module' => 'voipextension',
       'settings' => array(),
       'type' => 'voipextension',
-      'weight' => 19,
+      'weight' => 8,
     ),
   );
 
@@ -306,10 +305,9 @@ function inc_location_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'text',
         'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 0,
+        'type' => 'hidden',
+        'weight' => 18,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -351,7 +349,7 @@ function inc_location_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 5,
+      'weight' => 1,
     ),
     'widget_type' => 'text_textfield',
   );
@@ -373,7 +371,7 @@ function inc_location_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 4,
+        'weight' => 3,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -415,7 +413,7 @@ function inc_location_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 17,
+      'weight' => 7,
     ),
     'widget_type' => 'text_textfield',
   );
@@ -432,14 +430,14 @@ function inc_location_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'geofield',
         'settings' => array(
           'data' => 'full',
-          'map_preset' => 'geofield_formatter_map',
+          'map_preset' => 'geofield_location_formatter_map',
         ),
         'type' => 'geofield_openlayers',
-        'weight' => 6,
+        'weight' => 0,
       ),
       'full' => array(
         'label' => 'above',
@@ -480,7 +478,7 @@ function inc_location_field_default_field_instances() {
     'weight' => 7,
     'widget' => array(
       'active' => 1,
-      'module' => 'geocoder',
+      'module' => 'geofield',
       'settings' => array(
         'delta_handling' => 'default',
         'geocoder_field' => '_geocoder_tokens',
@@ -499,8 +497,8 @@ function inc_location_field_default_field_instances() {
           ),
         ),
       ),
-      'type' => 'geocoder',
-      'weight' => 7,
+      'type' => 'geofield_wkt',
+      'weight' => 3,
     ),
     'widget_type' => 'geofield_wkt',
   );

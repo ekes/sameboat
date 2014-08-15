@@ -6,7 +6,6 @@ version = 7.x-1.0-alpha3
 project = inc_sms_blast
 dependencies[] = ctools
 dependencies[] = eck
-dependencies[] = eck
 dependencies[] = eck_pm
 dependencies[] = features
 dependencies[] = node_reference

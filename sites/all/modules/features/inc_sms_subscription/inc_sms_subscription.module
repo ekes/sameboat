@@ -186,16 +186,3 @@ function inc_sms_subscription_voipnumber_widget_process($element, $form_state, $
   );
   return $element;
 }
-
-/**
- * Voiphonenumber_widget hook_element_info_alter #element_validate callback.
- *
- * Add US code if required.
- */
-function inc_sms_subscription_voipnumber_widget_validate($element, &$form_state) {
-  // Really basic start this one. But it should work for most cases along with
-  // the validation done by voipnumber itself.
-  if (substr(trim($form_state['values']['field_mobile_number']['und'][0]['vnid']), 0, 2) != '+1') {
-    $form_state['values']['field_mobile_number']['und'][0]['vnid'] = '+1' . $form_state['values']['field_mobile_number']['und'][0]['vnid'];
-  }
-}

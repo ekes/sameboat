@@ -22,7 +22,7 @@ function inc_event_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 4,
+        'weight' => 3,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -40,24 +40,129 @@ function inc_event_field_default_field_instances() {
         'type' => 'text_summary_or_trimmed',
         'weight' => 4,
       ),
+      'token' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'body',
-    'label' => 'Description',
+    'label' => 'Event description',
     'required' => 1,
     'settings' => array(
-      'display_summary' => TRUE,
+      'display_summary' => 1,
       'text_processing' => 1,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
+      'active' => 1,
       'module' => 'text',
       'settings' => array(
         'rows' => 20,
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 4,
+      'weight' => 1,
+    ),
+  );
+
+  // Exported field_instance: 'node-event-date_repeat_entity_clone_state'
+  $field_instances['node-event-date_repeat_entity_clone_state'] = array(
+    'bundle' => 'event',
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 24,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'token' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 7,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'date_repeat_entity_clone_state',
+    'label' => 'Clone state (do not change)',
+    'required' => FALSE,
+    'settings' => array(
+      'allowed_values' => array(
+        0 => '',
+        1 => '',
+      ),
+      'allowed_values_function' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(
+        'display_label' => 0,
+      ),
+      'type' => 'options_onoff',
+      'weight' => 101,
+    ),
+  );
+
+  // Exported field_instance: 'node-event-date_repeat_entity_master_uuid'
+  $field_instances['node-event-date_repeat_entity_master_uuid'] = array(
+    'bundle' => 'event',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 23,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'token' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 8,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'date_repeat_entity_master_uuid',
+    'label' => 'Master UUID (do not change)',
+    'required' => FALSE,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 100,
     ),
   );
 
@@ -78,7 +183,7 @@ function inc_event_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 2,
+        'weight' => 1,
       ),
       'full' => array(
         'label' => 'inline',
@@ -105,7 +210,7 @@ function inc_event_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 7,
+        'weight' => 3,
       ),
     ),
     'entity_type' => 'node',
@@ -144,8 +249,8 @@ function inc_event_field_default_field_instances() {
         'settings' => array(
           'format_type' => 'month_day_time',
           'fromto' => 'both',
-          'multiple_from' => 'now',
-          'multiple_number' => 1,
+          'multiple_from' => '',
+          'multiple_number' => '',
           'multiple_to' => '',
           'show_repeat_rule' => 'hide',
         ),
@@ -186,8 +291,22 @@ function inc_event_field_default_field_instances() {
         'settings' => array(
           'format_type' => 'long',
           'fromto' => 'both',
-          'multiple_from' => 'now',
-          'multiple_number' => 1,
+          'multiple_from' => '',
+          'multiple_number' => '',
+          'multiple_to' => '',
+          'show_repeat_rule' => 'hide',
+        ),
+        'type' => 'date_default',
+        'weight' => 1,
+      ),
+      'token' => array(
+        'label' => 'inline',
+        'module' => 'date',
+        'settings' => array(
+          'format_type' => 'sms',
+          'fromto' => 'both',
+          'multiple_from' => '',
+          'multiple_number' => '',
           'multiple_to' => '',
           'show_repeat_rule' => 'hide',
         ),
@@ -197,8 +316,8 @@ function inc_event_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_date',
-    'label' => 'Date',
-    'required' => FALSE,
+    'label' => 'Event date',
+    'required' => 0,
     'settings' => array(
       'default_value' => 'now',
       'default_value2' => 'same',
@@ -221,7 +340,7 @@ function inc_event_field_default_field_instances() {
         'year_range' => '-1:+3',
       ),
       'type' => 'date_select',
-      'weight' => 0,
+      'weight' => 5,
     ),
     'widget_type' => 'date_popup_repeat',
   );
@@ -243,7 +362,7 @@ function inc_event_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 18,
+        'weight' => 22,
       ),
       'full' => array(
         'label' => 'above',
@@ -256,6 +375,16 @@ function inc_event_field_default_field_instances() {
         'settings' => array(),
         'type' => 'hidden',
         'weight' => 12,
+      ),
+      'token' => array(
+        'label' => 'above',
+        'module' => 'voipextension',
+        'settings' => array(
+          'prefix_suffix' => TRUE,
+          'status_display' => 0,
+        ),
+        'type' => 'voipextension_default',
+        'weight' => 5,
       ),
     ),
     'entity_type' => 'node',
@@ -284,20 +413,15 @@ function inc_event_field_default_field_instances() {
   // Exported field_instance: 'node-event-field_location'
   $field_instances['node-event-field_location'] = array(
     'bundle' => 'event',
-    'default_value' => array(
-      0 => array(
-        'value' => '',
-        '_error_element' => 'default_value_widget][field_location][0][value',
-      ),
-    ),
+    'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'This field overrides both Venue and Organizer fields. It might be used whenever the desired venue or organizer is not listed above. Examples: Playground by the church, Tom\'s house, 123 Orchard St, etc.',
+    'description' => 'This field overrides both <em>Event location</em> and <em>Organizer</em> fields. It might be used whenever the desired venue or organizer is not listed above. Examples: Playground by the church, Tom\'s house, 123 Orchard St, etc.',
     'display' => array(
       'default' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 15,
+        'weight' => 19,
       ),
       'full' => array(
         'label' => 'above',
@@ -319,11 +443,17 @@ function inc_event_field_default_field_instances() {
         'type' => 'text_default',
         'weight' => 3,
       ),
+      'token' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 9,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_location',
     'label' => 'Location text',
-    'required' => FALSE,
+    'required' => 0,
     'settings' => array(
       'text_processing' => 0,
       'user_register_form' => FALSE,
@@ -333,12 +463,10 @@ function inc_event_field_default_field_instances() {
       'active' => 1,
       'module' => 'text',
       'settings' => array(
-        'default_value_php' => NULL,
-        'rows' => 5,
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 1,
+      'weight' => 6,
     ),
     'widget_type' => 'text_textfield',
   );
@@ -346,20 +474,15 @@ function inc_event_field_default_field_instances() {
   // Exported field_instance: 'node-event-field_location_reference'
   $field_instances['node-event-field_location_reference'] = array(
     'bundle' => 'event',
-    'default_value' => array(
-      0 => array(
-        'nid' => '',
-      ),
-    ),
+    'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'The location where the event is going to be held.',
+    'description' => 'The location where the event is going to be held. If not listed, <a href="/node/add/location">please add the new location first by clicking here</a>, and then return to this page.',
     'display' => array(
       'default' => array(
         'label' => 'inline',
-        'module' => 'node_reference',
         'settings' => array(),
-        'type' => 'node_reference_plain',
-        'weight' => 1,
+        'type' => 'hidden',
+        'weight' => 17,
       ),
       'full' => array(
         'label' => 'inline',
@@ -381,11 +504,20 @@ function inc_event_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 13,
       ),
+      'token' => array(
+        'label' => 'inline',
+        'module' => 'node_reference',
+        'settings' => array(
+          'node_reference_view_mode' => 'full',
+        ),
+        'type' => 'node_reference_node',
+        'weight' => 6,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_location_reference',
-    'label' => 'Venue',
-    'required' => FALSE,
+    'label' => 'Event location',
+    'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
@@ -393,13 +525,9 @@ function inc_event_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(
-        'autocomplete_match' => 'contains',
-        'default_value_php' => NULL,
-        'size' => 60,
-      ),
+      'settings' => array(),
       'type' => 'options_select',
-      'weight' => -1,
+      'weight' => 2,
     ),
     'widget_type' => 'nodereference_select',
   );
@@ -407,19 +535,15 @@ function inc_event_field_default_field_instances() {
   // Exported field_instance: 'node-event-field_organiser_reference'
   $field_instances['node-event-field_organiser_reference'] = array(
     'bundle' => 'event',
-    'default_value' => array(
-      0 => array(
-        'nid' => '',
-      ),
-    ),
+    'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'This field is only required when the organization responsible for the event is different from the one listed in the Venue field.',
+    'description' => 'This field is only required when the organization responsible for the event is different from the one listed in the <em>Event location</em> field.',
     'display' => array(
       'default' => array(
         'label' => 'inline',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 14,
+        'weight' => 18,
       ),
       'full' => array(
         'label' => 'above',
@@ -450,8 +574,8 @@ function inc_event_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_organiser_reference',
-    'label' => 'Organizer',
-    'required' => FALSE,
+    'label' => 'Event organizer',
+    'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
@@ -459,13 +583,9 @@ function inc_event_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(
-        'autocomplete_match' => 'contains',
-        'default_value_php' => NULL,
-        'size' => 60,
-      ),
+      'settings' => array(),
       'type' => 'options_select',
-      'weight' => 0,
+      'weight' => 3,
     ),
     'widget_type' => 'nodereference_select',
   );
@@ -486,7 +606,7 @@ function inc_event_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 16,
+        'weight' => 20,
       ),
       'full' => array(
         'label' => 'above',
@@ -512,7 +632,7 @@ function inc_event_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 8,
+        'weight' => 4,
       ),
     ),
     'entity_type' => 'node',
@@ -549,7 +669,7 @@ function inc_event_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 17,
+        'weight' => 21,
       ),
       'full' => array(
         'label' => 'above',
@@ -563,19 +683,26 @@ function inc_event_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 14,
       ),
+      'token' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 10,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'taxonomy_vocabulary_1',
-    'label' => 'Topic',
+    'label' => 'Event category',
     'required' => 1,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
     'widget' => array(
+      'active' => 1,
       'module' => 'options',
       'settings' => array(),
-      'type' => 'options_select',
-      'weight' => 0,
+      'type' => 'options_buttons',
+      'weight' => 4,
     ),
   );
 
@@ -618,20 +745,23 @@ function inc_event_field_default_field_instances() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Clone state (do not change)');
   t('Cost');
   t('Currency and amount; or \'Free\'.');
-  t('Date');
-  t('Description');
+  t('Event category');
+  t('Event date');
+  t('Event description');
+  t('Event location');
+  t('Event organizer');
   t('Extension');
   t('Location text');
+  t('Master UUID (do not change)');
   t('Optional alternative text to send in SMS notifications for the event. If not present, the system will generate the notification automatically.');
-  t('Organizer');
   t('SMS notification text');
-  t('The location where the event is going to be held.');
-  t('This field is only required when the organization responsible for the event is different from the one listed in the Venue field.');
-  t('This field overrides both Venue and Organizer fields. It might be used whenever the desired venue or organizer is not listed above. Examples: Playground by the church, Tom\'s house, 123 Orchard St, etc.');
+  t('The location where the event is going to be held. If not listed, <a href="/node/add/location">please add the new location first by clicking here</a>, and then return to this page.');
+  t('This field is only required when the organization responsible for the event is different from the one listed in the <em>Event location</em> field.');
+  t('This field overrides both <em>Event location</em> and <em>Organizer</em> fields. It might be used whenever the desired venue or organizer is not listed above. Examples: Playground by the church, Tom\'s house, 123 Orchard St, etc.');
   t('Topic');
-  t('Venue');
 
   return $field_instances;
 }

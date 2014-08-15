@@ -17,24 +17,16 @@ function inc_event_ds_field_settings_info() {
   $ds_fieldsetting->bundle = 'event';
   $ds_fieldsetting->view_mode = 'default';
   $ds_fieldsetting->settings = array(
-    'extentiontext' => array(
-      'weight' => '3',
+    'incourage_events_hotline' => array(
+      'weight' => '2',
       'label' => 'inline',
       'format' => 'default',
       'formatter_settings' => array(
         'show_title' => 0,
         'title_wrapper' => '',
-        'ctools' => 'a:3:{s:4:"conf";a:5:{s:11:"admin_title";s:20:"short extention text";s:5:"title";s:0:"";s:4:"body";s:39:"715-952-9020 ext. %node:field_extension";s:6:"format";s:1:"1";s:10:"substitute";i:1;}s:4:"type";s:6:"custom";s:7:"subtype";s:6:"custom";}',
+        'ctools' => 'a:3:{s:4:"conf";a:5:{s:11:"admin_title";s:24:"Incourage events hotline";s:5:"title";s:0:"";s:4:"body";s:90:"Call 715.952.9020 ext. %node:field_extension or Text %node:field_extension to 715.952.9020";s:6:"format";s:1:"5";s:10:"substitute";i:1;}s:4:"type";s:6:"custom";s:7:"subtype";s:6:"custom";}',
         'load_terms' => 0,
-        'ft' => array(
-          'lb' => 'Event phone and text number',
-        ),
       ),
-    ),
-    'service_links_displays_group' => array(
-      'weight' => '5',
-      'label' => 'hidden',
-      'format' => 'sld_group_image',
     ),
   );
   $export['node|event|default'] = $ds_fieldsetting;
@@ -132,23 +124,16 @@ function inc_event_ds_layout_settings_info() {
     'regions' => array(
       'one_main' => array(
         0 => 'field_date',
-        1 => 'field_location_reference',
-        2 => 'field_cost',
-        3 => 'extentiontext',
-        4 => 'body',
-        5 => 'service_links_displays_group',
+        1 => 'field_cost',
+        2 => 'incourage_events_hotline',
+        3 => 'body',
       ),
     ),
     'fields' => array(
       'field_date' => 'one_main',
-      'field_location_reference' => 'one_main',
       'field_cost' => 'one_main',
-      'extentiontext' => 'one_main',
+      'incourage_events_hotline' => 'one_main',
       'body' => 'one_main',
-      'service_links_displays_group' => 'one_main',
-    ),
-    'limit' => array(
-      'field_date' => '1',
     ),
     'classes' => array(),
     'wrappers' => array(
@@ -189,9 +174,6 @@ function inc_event_ds_layout_settings_info() {
       'field_location' => 'two_33_66_first',
       'body' => 'two_33_66_second',
       'service_links_displays_group' => 'two_33_66_second',
-    ),
-    'limit' => array(
-      'field_date' => '1',
     ),
     'classes' => array(),
     'wrappers' => array(

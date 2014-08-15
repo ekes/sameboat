@@ -41,6 +41,44 @@ function inc_location_default_page_manager_handlers() {
       ),
       'logic' => 'and',
     ),
+    'metatag_panels' => array(
+      'enabled' => 1,
+      'metatags' => array(
+        'title' => array(
+          'value' => '[current-page:title]',
+        ),
+        'description' => array(
+          'value' => '[node:field_official_name] [node:field_address_street] [node:field_address_city] [node:field_address_postcode] Call 715.952.9020 ext. [node:field_extension] or Text [node:field_extension] to 715.952.9020',
+        ),
+        'og:description' => array(
+          'value' => 'Event location [node:field_official_name] in [node:field_address_city]',
+        ),
+        'og:latitude' => array(
+          'value' => '[node:field-point:lat]',
+        ),
+        'og:longitude' => array(
+          'value' => '[node:field-point:lon]',
+        ),
+        'og:street-address' => array(
+          'value' => '[node:field_address_street]',
+        ),
+        'og:locality' => array(
+          'value' => '[node:field_address_city]',
+        ),
+        'og:postal-code' => array(
+          'value' => '[node:field_address_postcode]',
+        ),
+        'og:phone_number' => array(
+          'value' => '715-952-9020 ext. [node:field_extension]',
+        ),
+        'twitter:title' => array(
+          'value' => '[current-page:title]',
+        ),
+        'twitter:description' => array(
+          'value' => '[node:field_address_street] Phone 715.952.9020 ext. [node:field_extension] ',
+        ),
+      ),
+    ),
   );
   $display = new panels_display();
   $display->layout = 'onecol';
@@ -58,23 +96,21 @@ function inc_location_default_page_manager_handlers() {
     $pane = new stdClass();
     $pane->pid = 'new-1';
     $pane->panel = 'middle';
-    $pane->type = 'entity_field';
-    $pane->subtype = 'node:field_point';
+    $pane->type = 'node_content';
+    $pane->subtype = 'node_content';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'label' => 'hidden',
-      'formatter' => 'geofield_openlayers',
-      'delta_limit' => 0,
-      'delta_offset' => '0',
-      'delta_reversed' => FALSE,
-      'formatter_settings' => array(
-        'data' => 'full',
-        'map_preset' => 'geofield_formatter_map',
-      ),
-      'context' => 'argument_entity_id:node_1',
-      'override_title' => 0,
+      'links' => 0,
+      'page' => 1,
+      'no_extras' => 0,
+      'override_title' => 1,
       'override_title_text' => '',
+      'identifier' => '',
+      'link' => 0,
+      'leave_node_title' => 0,
+      'build_mode' => 'full',
+      'context' => 'argument_nid_1',
     );
     $pane->cache = array();
     $pane->style = array(
@@ -83,25 +119,18 @@ function inc_location_default_page_manager_handlers() {
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
-    $pane->locks = array();
+    $pane->locks = '';
     $display->content['new-1'] = $pane;
     $display->panels['middle'][0] = 'new-1';
     $pane = new stdClass();
     $pane->pid = 'new-2';
     $pane->panel = 'middle';
-    $pane->type = 'entity_field';
-    $pane->subtype = 'node:field_address_street';
+    $pane->type = 'block';
+    $pane->subtype = 'service_links-service_links';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'label' => 'hidden',
-      'formatter' => 'text_default',
-      'delta_limit' => 0,
-      'delta_offset' => '0',
-      'delta_reversed' => FALSE,
-      'formatter_settings' => array(),
-      'context' => 'argument_entity_id:node_1',
-      'override_title' => 0,
+      'override_title' => 1,
       'override_title_text' => '',
     );
     $pane->cache = array();
@@ -117,21 +146,11 @@ function inc_location_default_page_manager_handlers() {
     $pane = new stdClass();
     $pane->pid = 'new-3';
     $pane->panel = 'middle';
-    $pane->type = 'entity_field';
-    $pane->subtype = 'node:field_address_postcode';
+    $pane->type = 'views_panes';
+    $pane->subtype = 'upcoming-panel_pane_1';
     $pane->shown = TRUE;
     $pane->access = array();
-    $pane->configuration = array(
-      'label' => 'hidden',
-      'formatter' => 'text_default',
-      'delta_limit' => 0,
-      'delta_offset' => '0',
-      'delta_reversed' => FALSE,
-      'formatter_settings' => array(),
-      'context' => 'argument_entity_id:node_1',
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
+    $pane->configuration = array();
     $pane->cache = array();
     $pane->style = array(
       'settings' => NULL,
@@ -145,21 +164,11 @@ function inc_location_default_page_manager_handlers() {
     $pane = new stdClass();
     $pane->pid = 'new-4';
     $pane->panel = 'middle';
-    $pane->type = 'entity_field';
-    $pane->subtype = 'node:field_phone_text';
-    $pane->shown = TRUE;
+    $pane->type = 'subscribe_node';
+    $pane->subtype = 'subscribe_node';
+    $pane->shown = FALSE;
     $pane->access = array();
-    $pane->configuration = array(
-      'label' => 'hidden',
-      'formatter' => 'text_default',
-      'delta_limit' => 0,
-      'delta_offset' => '0',
-      'delta_reversed' => FALSE,
-      'formatter_settings' => array(),
-      'context' => 'argument_entity_id:node_1',
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
+    $pane->configuration = array();
     $pane->cache = array();
     $pane->style = array(
       'settings' => NULL,
@@ -171,7 +180,7 @@ function inc_location_default_page_manager_handlers() {
     $display->content['new-4'] = $pane;
     $display->panels['middle'][3] = 'new-4';
   $display->hide_title = PANELS_TITLE_FIXED;
-  $display->title_pane = '0';
+  $display->title_pane = 'new-1';
   $handler->conf['display'] = $display;
   $export['node_view_panel_context'] = $handler;
 

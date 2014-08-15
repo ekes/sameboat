@@ -45,38 +45,34 @@ function inc_location_ds_layout_settings_info() {
   $ds_layout->entity_type = 'node';
   $ds_layout->bundle = 'location';
   $ds_layout->view_mode = 'default';
-  $ds_layout->layout = 'panels-two_33_66';
+  $ds_layout->layout = 'panels-two_66_33';
   $ds_layout->settings = array(
     'regions' => array(
-      'two_33_66_top' => array(
-        0 => 'field_official_name',
+      'two_66_33_first' => array(
+        0 => 'field_point',
       ),
-      'two_33_66_first' => array(
+      'two_66_33_second' => array(
         1 => 'field_address_street',
         2 => 'field_address_city',
-        3 => 'field_address_postcode',
-        4 => 'field_phone_text',
+        3 => 'field_phone_text',
+        4 => 'extentiontext',
         5 => 'body',
-      ),
-      'two_33_66_second' => array(
-        6 => 'field_point',
       ),
     ),
     'fields' => array(
-      'field_official_name' => 'two_33_66_top',
-      'field_address_street' => 'two_33_66_first',
-      'field_address_city' => 'two_33_66_first',
-      'field_address_postcode' => 'two_33_66_first',
-      'field_phone_text' => 'two_33_66_first',
-      'body' => 'two_33_66_first',
-      'field_point' => 'two_33_66_second',
+      'field_point' => 'two_66_33_first',
+      'field_address_street' => 'two_66_33_second',
+      'field_address_city' => 'two_66_33_second',
+      'field_phone_text' => 'two_66_33_second',
+      'extentiontext' => 'two_66_33_second',
+      'body' => 'two_66_33_second',
     ),
     'classes' => array(),
     'wrappers' => array(
-      'two_33_66_top' => 'div',
-      'two_33_66_first' => 'div',
-      'two_33_66_second' => 'div',
-      'two_33_66_bottom' => 'div',
+      'two_66_33_top' => 'div',
+      'two_66_33_first' => 'div',
+      'two_66_33_second' => 'div',
+      'two_66_33_bottom' => 'div',
     ),
     'layout_wrapper' => 'div',
     'layout_attributes' => '',

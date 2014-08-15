@@ -83,7 +83,7 @@ function inc_sms_blast_field_default_field_instances() {
       'module' => 'nodereference_url',
       'settings' => array(
         'autocomplete_match' => 'contains',
-        'edit_fallback' => 1,
+        'edit_fallback' => 0,
         'fallback' => 'autocomplete',
         'node_link' => array(
           'destination' => 'default',

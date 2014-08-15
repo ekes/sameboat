@@ -43,12 +43,12 @@ function inc_bulletin_views_default_views() {
     ),
   );
   $handler->display->display_options['exposed_block'] = TRUE;
-  /* Relationship: Content: Venue (field_location_reference) */
+  /* Relationship: Content: Event location (field_location_reference) */
   $handler->display->display_options['relationships']['field_location_reference_nid']['id'] = 'field_location_reference_nid';
   $handler->display->display_options['relationships']['field_location_reference_nid']['table'] = 'field_data_field_location_reference';
   $handler->display->display_options['relationships']['field_location_reference_nid']['field'] = 'field_location_reference_nid';
   $handler->display->display_options['relationships']['field_location_reference_nid']['delta'] = '-1';
-  /* Relationship: Content: Organizer (field_organiser_reference) */
+  /* Relationship: Content: Event organizer (field_organiser_reference) */
   $handler->display->display_options['relationships']['field_organiser_reference_nid']['id'] = 'field_organiser_reference_nid';
   $handler->display->display_options['relationships']['field_organiser_reference_nid']['table'] = 'field_data_field_organiser_reference';
   $handler->display->display_options['relationships']['field_organiser_reference_nid']['field'] = 'field_organiser_reference_nid';
@@ -96,7 +96,7 @@ function inc_bulletin_views_default_views() {
     'prefix_suffix' => 1,
     'status_display' => '0',
   );
-  /* Field: Content: Date */
+  /* Field: Content: Event date */
   $handler->display->display_options['fields']['field_date']['id'] = 'field_date';
   $handler->display->display_options['fields']['field_date']['table'] = 'field_data_field_date';
   $handler->display->display_options['fields']['field_date']['field'] = 'field_date';
@@ -113,17 +113,21 @@ function inc_bulletin_views_default_views() {
   );
   $handler->display->display_options['fields']['field_date']['group_rows'] = FALSE;
   $handler->display->display_options['fields']['field_date']['delta_offset'] = '0';
-  /* Field: Content: Description */
+  /* Field: Content: Body */
   $handler->display->display_options['fields']['body']['id'] = 'body';
   $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
   $handler->display->display_options['fields']['body']['field'] = 'body';
   $handler->display->display_options['fields']['body']['label'] = '';
   $handler->display->display_options['fields']['body']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['body']['alter']['text'] = '[title]
+<br />
 [field_date]
-Call 715.952.9020 ext. [field_extension]
-or Text [field_extension] to 715.952.9020
-[body]';
+Call 715.952.9020 ext. [field_extension] or Text [field_extension] to 715.952.9020
+<br />
+[body]
+<br />
+<hr />
+<br />';
   $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['body']['element_default_classes'] = FALSE;
   $handler->display->display_options['fields']['body']['type'] = 'text_plain';
@@ -143,18 +147,7 @@ or Text [field_extension] to 715.952.9020
   );
   $handler->display->display_options['filters']['type']['group'] = '0';
   $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
-  /* Filter criterion: Content: Title */
-  $handler->display->display_options['filters']['title']['id'] = 'title';
-  $handler->display->display_options['filters']['title']['table'] = 'node';
-  $handler->display->display_options['filters']['title']['field'] = 'title';
-  $handler->display->display_options['filters']['title']['operator'] = 'allwords';
-  $handler->display->display_options['filters']['title']['group'] = '0';
-  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
-  $handler->display->display_options['filters']['title']['expose']['label'] = 'Title contains the words';
-  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
-  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
-  /* Filter criterion: Content: Date -  start date (field_date) */
+  /* Filter criterion: Content: Event date -  start date (field_date) */
   $handler->display->display_options['filters']['field_date_value']['id'] = 'field_date_value';
   $handler->display->display_options['filters']['field_date_value']['table'] = 'field_data_field_date';
   $handler->display->display_options['filters']['field_date_value']['field'] = 'field_date_value';
@@ -181,8 +174,8 @@ or Text [field_extension] to 715.952.9020
   $handler->display->display_options['style_options']['parent_sort'] = 0;
   $handler->display->display_options['path'] = 'bulletin/upcoming/txt';
   $handler->display->display_options['displays'] = array(
-    'page_1' => 'page_1',
     'default' => 0,
+    'page_1' => 0,
   );
   $handler->display->display_options['use_batch'] = '0';
 

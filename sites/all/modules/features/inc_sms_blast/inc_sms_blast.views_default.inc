@@ -71,29 +71,11 @@ function inc_sms_blast_views_default_views() {
   $handler->display->display_options['fields']['operations']['id'] = 'operations';
   $handler->display->display_options['fields']['operations']['table'] = 'subscriber_entity';
   $handler->display->display_options['fields']['operations']['field'] = 'operations';
-  /* Contextual filter: Content: Nid */
-  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['table'] = 'node';
-  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['relationship'] = 'field_subscribe_event_nid';
-  $handler->display->display_options['arguments']['nid']['default_action'] = 'not found';
-  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['arguments']['nid']['specify_validation'] = TRUE;
-  $handler->display->display_options['arguments']['nid']['validate']['type'] = 'node';
-  $handler->display->display_options['arguments']['nid']['validate_options']['types'] = array(
-    'event' => 'event',
-  );
-  $handler->display->display_options['arguments']['nid']['validate_options']['access'] = TRUE;
-  $handler->display->display_options['arguments']['nid']['validate_options']['access_op'] = 'update';
-  $handler->display->display_options['arguments']['nid']['validate']['fail'] = 'access denied';
 
   /* Display: Event Page */
   $handler = $view->new_display('page', 'Event Page', 'subscriber_entity_admin_page');
   $handler->display->display_options['defaults']['relationships'] = FALSE;
-  /* Relationship: Field: Event subscriptions (field_subscribe_event) */
+  /* Relationship: Field: Event (field_subscribe_event) */
   $handler->display->display_options['relationships']['field_subscribe_event_nid']['id'] = 'field_subscribe_event_nid';
   $handler->display->display_options['relationships']['field_subscribe_event_nid']['table'] = 'field_data_field_subscribe_event';
   $handler->display->display_options['relationships']['field_subscribe_event_nid']['field'] = 'field_subscribe_event_nid';
@@ -106,6 +88,8 @@ function inc_sms_blast_views_default_views() {
   $handler->display->display_options['arguments']['nid']['field'] = 'nid';
   $handler->display->display_options['arguments']['nid']['relationship'] = 'field_subscribe_event_nid';
   $handler->display->display_options['arguments']['nid']['default_action'] = 'not found';
+  $handler->display->display_options['arguments']['nid']['title_enable'] = TRUE;
+  $handler->display->display_options['arguments']['nid']['title'] = '%1 event subscribers';
   $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
@@ -145,6 +129,8 @@ function inc_sms_blast_views_default_views() {
   $handler->display->display_options['arguments']['nid']['field'] = 'nid';
   $handler->display->display_options['arguments']['nid']['relationship'] = 'field_subscribe_locations_nid';
   $handler->display->display_options['arguments']['nid']['default_action'] = 'not found';
+  $handler->display->display_options['arguments']['nid']['title_enable'] = TRUE;
+  $handler->display->display_options['arguments']['nid']['title'] = '%1 location subscribers';
   $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
@@ -248,7 +234,7 @@ function inc_sms_blast_views_default_views() {
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'eck_inc_blast_sms';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
-  /* Field: Field: Topic subscriptions */
+  /* Field: Field: Topic recipients */
   $handler->display->display_options['fields']['field_topics']['id'] = 'field_topics';
   $handler->display->display_options['fields']['field_topics']['table'] = 'field_data_field_topics';
   $handler->display->display_options['fields']['field_topics']['field'] = 'field_topics';
@@ -498,7 +484,7 @@ function inc_sms_blast_views_default_views() {
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'eck_inc_blast_sms';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
-  /* Relationship: Field: Event subscriptions (field_subscribe_event) */
+  /* Relationship: Field: Event (field_subscribe_event) */
   $handler->display->display_options['relationships']['field_subscribe_event_nid']['id'] = 'field_subscribe_event_nid';
   $handler->display->display_options['relationships']['field_subscribe_event_nid']['table'] = 'field_data_field_subscribe_event';
   $handler->display->display_options['relationships']['field_subscribe_event_nid']['field'] = 'field_subscribe_event_nid';
