@@ -150,7 +150,7 @@ var {
  */
 @media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003304}}
 #branding {
-  background: url("../../../images/whats-up-header.png") no-repeat scroll left transparent;
+  background: url("../../../images/whatsup.png") no-repeat scroll left transparent;
 }
 
 /*
@@ -165,6 +165,11 @@ var {
 #logo img {
   vertical-align: bottom;
 }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003320}}
+#logo a {
+  width: 100%;
+  display: block;
+}
 
 /*
  * Wrapper for the site name and slogan (hgroup)
@@ -172,15 +177,15 @@ var {
 /*
  * Site name (h1)
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003331}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003336}}
 #site-name {
   margin: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003337}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003342}}
 #site-name a:link, #site-name a:visited {
   text-decoration: none;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003342}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003347}}
 #site-name a:hover, #site-name a:focus {
   text-decoration: underline;
 }
@@ -188,7 +193,7 @@ var {
 /*
  * Site slogan (h2)
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003352}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003357}}
 #site-slogan {
   margin: 0;
 }
@@ -202,7 +207,7 @@ var {
 /*
  * The main page title (h1)
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003370}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003375}}
 #page-title {
   margin: 0;
   color: #b679b0;
@@ -219,14 +224,14 @@ var {
 /*
  * Aggregator feed source
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003391}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003396}}
 #aggregator .feed-source .feed-icon {
   display: inline;
   float: none;
   margin-right: 10px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003399}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003404}}
 .feed-details dt,
 .feed-details dd {
   display: inline;
@@ -239,16 +244,16 @@ var {
 /*
  * Generic styles for links. See the ul.links declaration in node and comment stylesheets
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003414}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003419}}
 ul.links {
   margin: 0;
   padding: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003418}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003423}}
 ul.links.inline {
   display: block;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003422}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003427}}
 ul.links li {
   display: inline;
   list-style: none;
@@ -258,7 +263,7 @@ ul.links li {
 /*
  * Search results are an ordered list so reset the margin
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003433}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003438}}
 .search-results {
   margin: 0;
 }
@@ -269,13 +274,13 @@ ul.links li {
 /*
  * Standard region wrapper, don't add width to any regions, you will bork the layout - no margin, padding or borders etc
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003447}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003452}}
 .region .view-upcoming article {
   padding-bottom: .5em;
   margin-bottom: .5em;
   border-bottom: #e2e2e2 1px solid;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003452}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003457}}
 .region .view-upcoming article .field-name-body {
   margin: 1.66em 0;
 }
@@ -310,34 +315,34 @@ ul.links li {
 /*
  * Second sidebar
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003516}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003521}}
 .region-sidebar-second {
   color: white;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003520}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003525}}
 .region-sidebar-second .block {
   background-color: #cfd1d2;
   padding-top: .5em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003525}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003530}}
 .region-sidebar-second #block-menu-menu-promote-events {
   background-color: #605270;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003528}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003533}}
 .region-sidebar-second #block-menu-menu-promote-events a {
   color: white;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003533}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003538}}
 .region-sidebar-second .date-heading h3 {
   font-size: 1.3em;
   font-weight: 300;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003537}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003542}}
 .region-sidebar-second .date-heading h3 a {
   color: white;
   text-decoration: none;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003543}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003548}}
 .region-sidebar-second #edit-field-location-reference-nid {
   width: 100%;
 }
@@ -348,13 +353,13 @@ ul.links li {
 /*
  * Footer region
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003558}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003563}}
 .region-footer {
   background-color: #65696e;
   color: #cfd1d2;
   font-size: .9em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003563}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003568}}
 .region-footer #block-user-login {
   color: #65696e;
   background-color: #cfd1d2;
@@ -363,24 +368,24 @@ ul.links li {
 /* 
  * Leaderboard region
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003573}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003578}}
 .region-leaderboard {
   background-image: url("../../../images/bg-nav-utilities.png");
   height: 28px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003577}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003582}}
 .region-leaderboard ul {
   float: right;
   margin-top: 2px;
   padding-right: 2em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003582}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003587}}
 .region-leaderboard ul li {
   display: inline;
   list-style-type: none;
   padding: 0 0.5em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003587}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003592}}
 .region-leaderboard ul li a {
   color: #e2e2e2;
   text-decoration: none;
@@ -389,20 +394,27 @@ ul.links li {
 /* =============================================================================
  *   Links
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003600}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003605}}
 a {
   text-decoration: underline;
   color: #605270;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003611}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003616}}
 a:hover, a:focus {
   text-decoration: underline;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003617}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003622}}
 div.service-links,
 div.service-links a {
   text-align: right;
+}
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003627}}
+div.service-links ul,
+div.service-links li {
+  display: inline;
+  list-style: none;
 }
 
 /* =============================================================================
@@ -415,18 +427,18 @@ div.service-links a {
  *  - #secondary-menu (secondary/user menu)
  * You can target all of these with .nav or div[id$="menu-bar"]
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003634}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003644}}
 .nav {
   clear: both;
   margin: 10px 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003639}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003649}}
 .nav ul,
 .nav ul.menu {
   margin: 0;
   padding: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003645}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003655}}
 .nav li,
 .nav ul.menu li {
   display: inline;
@@ -435,14 +447,14 @@ div.service-links a {
   margin: 0;
   padding: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003654}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003664}}
 .nav li a,
 .nav ul.menu li a {
   display: block;
   white-space: nowrap;
   padding: 0 10px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003665}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003675}}
 .nav .block {
   margin-bottom: 0;
 }
@@ -450,11 +462,11 @@ div.service-links a {
 /* =============================================================================
  *   Superfish
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003675}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003685}}
 ul.sf-menu {
   margin-bottom: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003678}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003688}}
 ul.sf-menu a {
   border-left: 0;
   border-top: 0;
@@ -463,11 +475,11 @@ ul.sf-menu a {
   height: 2.5em;
   line-height: 2.5em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003692}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003702}}
 ul.sf-menu li:hover, ul.sf-menu li.sfHover {
   outline: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003700}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003710}}
 ul.sf-menu a:focus, ul.sf-menu a:hover, ul.sf-menu a:active {
   outline: 0;
 }
@@ -475,12 +487,12 @@ ul.sf-menu a:focus, ul.sf-menu a:hover, ul.sf-menu a:active {
 /*
  * Superfish blocks
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003714}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003724}}
 .block-superfish ul {
   margin: 0 !important;
   padding: 0 !important;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003725}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003735}}
 .block-superfish li {
   margin: 0 !important;
   padding: 0 !important;
@@ -489,22 +501,22 @@ ul.sf-menu a:focus, ul.sf-menu a:hover, ul.sf-menu a:active {
 /*
  * Vertical style
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003735}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003745}}
 .sf-vertical {
   width: 100%;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003738}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003748}}
 .sf-vertical li {
   width: 100%;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003744}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003754}}
 .sf-vertical li:hover ul, .sf-vertical li.sfHover ul {
   left: 100%;
   top: 0;
   margin: 0;
   padding: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003751}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003761}}
 .sf-vertical li a {
   padding: 0 10px;
 }
@@ -512,7 +524,7 @@ ul.sf-menu a:focus, ul.sf-menu a:hover, ul.sf-menu a:active {
 /*
  * Navbar style
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003761}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003771}}
 .sf-navbar {
   padding-bottom: 0 !important;
 }
@@ -520,7 +532,7 @@ ul.sf-menu a:focus, ul.sf-menu a:hover, ul.sf-menu a:active {
 /*
  * Sensible padding for the default style
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003769}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003779}}
 .sf-menu.sf-style-default a {
   padding: 0 10px;
 }
@@ -528,21 +540,21 @@ ul.sf-menu a:focus, ul.sf-menu a:hover, ul.sf-menu a:active {
 /* =============================================================================
  *   Menus, usually blocks
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003778}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003788}}
 ul.menu {
   padding-left: 15px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003781}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003791}}
 ul.menu ul {
   padding-left: 15px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003789}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003799}}
 ul.menu li {
   margin: 0;
 }
 
 /* If li.content exists it's a problem, so reset the padding */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003818}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003828}}
 .block .menu li.content {
   padding: 0;
 }
@@ -550,13 +562,13 @@ ul.menu li {
 /* =============================================================================
  *   Book navigation menu
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003835}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003845}}
 .book-navigation .page-up {
   /* Prevent text wrapping to a new line, assumes English "up" is used (two characters) */
   min-width: 2em;
   white-space: nowrap;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003841}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003851}}
 .book-navigation .menu {
   margin-left: 0;
 }
@@ -564,7 +576,7 @@ ul.menu li {
 /* =============================================================================
  *   Breadcrumbs
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003851}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003861}}
 #breadcrumb {
   margin: 0 0 10px 0;
   background-color: #4a3650;
@@ -572,31 +584,31 @@ ul.menu li {
   font-size: .9em;
   /* If the label is set to show in theme settings the label class is added */
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003858}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003868}}
 #breadcrumb .breadcrumb-label {
   font-size: 1em;
   display: inline;
   padding-right: 10px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003863}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003873}}
 #breadcrumb .breadcrumb-label:after {
   content: ":";
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003868}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003878}}
 #breadcrumb ol {
   margin: 0;
   padding: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003873}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003883}}
 #breadcrumb .with-breadcrumb-label ol {
   display: inline;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003877}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003887}}
 #breadcrumb li {
   list-style: none;
   display: inline;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003886}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003896}}
 #breadcrumb a {
   color: white;
   text-decoration: none;
@@ -605,31 +617,31 @@ ul.menu li {
 /* =============================================================================
  *   Pagers
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003906}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003916}}
 ul.pager {
   clear: both;
   margin: 0;
   text-align: center;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003913}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003923}}
 .item-list ul.pager li {
   margin: 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003918}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003928}}
 ul.pager li {
   background-image: none;
   display: inline;
   list-style-type: none;
   padding: .5em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003924}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003934}}
 ul.pager li.pager-current {
   font-weight: 700;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003930}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003940}}
 .block ul.pager li {
   margin: 0;
 }
@@ -640,7 +652,7 @@ ul.pager li.pager-current {
 /* =============================================================================
  *   Skip Navigation
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003967}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003977}}
 #skip-link {
   left: 50%;
   margin-left: -6.5em;
@@ -650,7 +662,7 @@ ul.pager li.pager-current {
   width: 12em;
   z-index: 50;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003976}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003986}}
 #skip-link a {
   background: #444;
   background: rgba(0, 0, 0, 0.6);
@@ -661,7 +673,7 @@ ul.pager li.pager-current {
   text-align: center;
   text-decoration: none;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003987}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003997}}
 #skip-link a:link, #skip-link a:visited {
   background: #444;
   background: rgba(0, 0, 0, 0.6);
@@ -672,7 +684,7 @@ ul.pager li.pager-current {
   text-align: center;
   text-decoration: none;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\00003999}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031009}}
 #skip-link a:hover, #skip-link a:focus, #skip-link a:active {
   outline: 0;
 }
@@ -680,24 +692,24 @@ ul.pager li.pager-current {
 /* =============================================================================
  *   Tabs (local tasks)
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031010}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031020}}
 #tasks {
   margin-bottom: 15px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031015}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031025}}
 ul.primary {
   border-bottom-color: #cccccc;
   margin: 20px 0;
   padding: 0 0 0 5px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031020}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031030}}
 ul.primary li {
   display: block;
   float: left;
   margin: 0 1px -1px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031025}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031035}}
 ul.primary li a {
   background-color: whitesmoke;
   border-color: #cccccc;
@@ -708,12 +720,12 @@ ul.primary li a {
   height: 1.5em;
   line-height: 1.5em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031036}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031046}}
 ul.primary li a:hover, ul.primary li a:focus {
   background-color: #eeeeee;
   border-color: #cccccc;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031046}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031056}}
 ul.primary li.active a,
 ul.primary li.active a:hover,
 ul.primary li.active a:focus {
@@ -721,19 +733,19 @@ ul.primary li.active a:focus {
   border-bottom-color: white;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031054}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031064}}
 ul.secondary {
   border-bottom: 1px solid #cccccc;
   margin: 1em 0 0;
   padding: 0 .3em 1em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031059}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031069}}
 ul.secondary li {
   border-right: 0;
   list-style: none;
   padding: 0 10px 0 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031066}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031076}}
 ul.secondary li a:hover, ul.secondary li a.active {
   border-bottom: none;
   text-decoration: underline;
@@ -742,7 +754,7 @@ ul.secondary li a:hover, ul.secondary li a.active {
 /* =============================================================================
  *   Action links
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031079}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031089}}
 ul.action-links {
   margin: 20px 0 0;
   list-style: none;
@@ -754,7 +766,7 @@ ul.action-links {
 /*
  * Wrapper for any field
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031097}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031107}}
 .field h2 {
   margin-top: 0;
 }
@@ -768,7 +780,7 @@ ul.action-links {
 /*
  * Labels are h2 in Adaptivetheme. Use a strong selector to mitigate unwanted ineritance issues
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031119}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031129}}
 .field-label {
   font-size: 1em;
   font-weight: 700;
@@ -786,17 +798,17 @@ ul.action-links {
 /*
  * Taxonomy
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031148}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031158}}
 .field-type-taxonomy-term-reference {
   /* The same bottom margin as p, blockquote, ul, ol and dl */
   margin-bottom: 1.5em;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031153}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031163}}
 .field-type-taxonomy-term-reference.field-label-inline .field-items {
   margin: 0;
   padding: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031158}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031168}}
 .field-type-taxonomy-term-reference.field-label-inline .field-item {
   display: inline;
   list-style: none;
@@ -854,7 +866,7 @@ ul.action-links {
 /*
  * Float left setting
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031273}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031283}}
 .ia-l .field-type-image figure,
 .iat-l .field-type-image figure {
   margin: 5px 20px 15px 0;
@@ -863,7 +875,7 @@ ul.action-links {
 /*
  * Centered setting
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031282}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031292}}
 .ia-c .field-type-image figure,
 .iat-c .field-type-image figure {
   margin: 5px auto 15px;
@@ -872,13 +884,13 @@ ul.action-links {
 /*
  * Float right setting
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031291}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031301}}
 .ia-r .field-type-image figure,
 .iat-r .field-type-image figure {
   margin: 5px 0 15px 20px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031295}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031305}}
 .field-name-service-links-displays-group {
   display: inline;
   float: right;
@@ -890,7 +902,7 @@ ul.action-links {
 /*
  * Main wrapper for most blocks, block_system_main does not have it
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031307}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031317}}
 .block {
   margin-bottom: 20px;
 }
@@ -913,7 +925,7 @@ ul.action-links {
 /*
  * Block title
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031345}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031355}}
 .block-title {
   margin: 0;
 }
@@ -924,12 +936,12 @@ ul.action-links {
 /*
  * Match item list and block menu margin and padding
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031362}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031372}}
 .block-content ul,
 .block-content ol {
   padding: 0 0 0 15px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031366}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031376}}
 .block-content li {
   margin: 0;
   padding: 0;
@@ -1019,11 +1031,11 @@ ul.action-links {
 /* =============================================================================
  *   Node Styling
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031539}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031549}}
 .node {
   margin-bottom: 20px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031556}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031566}}
 .node .node-title {
   margin: 0;
 }
@@ -1039,15 +1051,15 @@ ul.action-links {
 /*
  * Wrapper for the list of comments and its titles
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031614}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031624}}
 #comments {
   margin: 1.5em 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031618}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031628}}
 #comments h2.comment-title {
   margin: 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031622}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031632}}
 #comments h2.comment-form {
   margin: 0;
 }
@@ -1055,7 +1067,7 @@ ul.action-links {
 /*
  * Wrapper for a single comment
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031632}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031642}}
 .comment {
   margin-bottom: 20px;
 }
@@ -1063,7 +1075,7 @@ ul.action-links {
 /*
  * Comment title
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031663}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031673}}
 .comment-title {
   margin: 0;
 }
@@ -1077,7 +1089,7 @@ ul.action-links {
 /*
  * "New" marker for comments that are new for the current user
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031695}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031705}}
 .new {
   color: #cc0000;
 }
@@ -1085,7 +1097,7 @@ ul.action-links {
 /*
  * Nested comments are indented
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031703}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031713}}
 .indented {
   margin-left: 40px;
 }
@@ -1096,17 +1108,17 @@ ul.action-links {
 /*
  * Wrapper for a form element (or group of form elements) and its label
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031719}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031729}}
 .form-item input.error,
 .form-item textarea.error,
 .form-item select.error {
   border: 1px solid #cc0000;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031723}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031733}}
 .form-item label {
   font-weight: 700;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031730}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031740}}
 .form-item .description {
   font-size: 0.85em;
 }
@@ -1114,7 +1126,7 @@ ul.action-links {
 /*
  * Highlight marks and form required mark
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031744}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031754}}
 .marker,
 .form-required {
   color: #cc0000;
@@ -1123,7 +1135,7 @@ ul.action-links {
 /*
  * The submit button
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031758}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031768}}
 .container-inline div,
 .container-inline label {
   display: inline;
@@ -1132,7 +1144,7 @@ ul.action-links {
 /*
  * Define consistent borders
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031766}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031776}}
 fieldset {
   border: 1px solid #cccccc;
 }
@@ -1143,7 +1155,7 @@ fieldset {
 /*
  * Buttons used by contrib modules like Media
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031780}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031790}}
 a.button {
   -webkit-appearance: button;
   -moz-appearance: button;
@@ -1153,13 +1165,13 @@ a.button {
 /*
  * Password confirmation
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031789}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031799}}
 .password-parent,
 .confirm-parent {
   margin: 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031793}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031803}}
 #edit-field-extension {
   display: none;
 }
@@ -1167,18 +1179,18 @@ a.button {
 /* =============================================================================
  *   Tables
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031801}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031811}}
 table {
   margin: 10px 0;
   padding: 0;
   width: 100%;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031806}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031816}}
 table.sticky-header {
   z-index: 10;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031817}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031827}}
 table,
 thead,
 tbody,
@@ -1188,27 +1200,27 @@ td {
   border-color: #cccccc;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031824}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031834}}
 table,
 td,
 th {
   vertical-align: middle;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031831}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031841}}
 caption,
 th,
 td {
   text-align: left;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031836}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031846}}
 thead tr {
   font-weight: 700;
   background-color: #e5e5e5;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031843}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031853}}
 td,
 th {
   border-bottom: 0;
@@ -1216,29 +1228,29 @@ th {
   padding: 5px 7px;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031853}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031863}}
 tbody tr {
   border-top: 1px solid #cccccc;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031858}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031868}}
 tr {
   /* Table row striping */
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031860}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031870}}
 tr.odd {
   background: white;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031867}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031877}}
 tr.info, tr.even, tr:nth-child(2n+2) {
   border-bottom: 0;
   background-color: whitesmoke;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031876}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031886}}
 tr.odd td.active {
   background-color: #eeeeee;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031880}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031890}}
 tr.even td.active {
   background-color: #ebebeb;
 }
@@ -1247,7 +1259,7 @@ tr.even td.active {
  * Forum tables
  * Core sets white-space to nowrap, which makes no sense
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031908}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031918}}
 #forum td .created,
 #forum td .posts,
 #forum td .topics,
@@ -1260,12 +1272,12 @@ tr.even td.active {
 /* =============================================================================
  *   Messages
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031919}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031929}}
 div.messages {
   margin-bottom: 10px;
   margin-top: 10px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031924}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031934}}
 div.messages ul {
   margin-top: 0;
   margin-bottom: 0;
@@ -1274,7 +1286,7 @@ div.messages ul {
 /*
  * Unpublished nodes
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031965}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031975}}
 .node-unpublished p.unpublished,
 .comment-unpublished p.unpublished {
   color: pink;
@@ -1300,28 +1312,28 @@ div.messages ul {
 /* =============================================================================
  *    Maintenance pages
  * ========================================================================== */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031976}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031986}}
 .maintenance-page .container {
   padding: 40px 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031981}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031991}}
 .maintenance-page #site-name,
 .maintenance-page #page-title {
   margin: 0;
 }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031988}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031998}}
 .db-offline .container {
   margin: 0 auto;
   padding: 40px 0;
   width: 100%;
   max-width: 960px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031995}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032005}}
 .db-offline div.messages {
   margin: 20px 0 0;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000031999}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032009}}
 .db-offline #content {
   padding: 20px 0;
 }
@@ -1332,7 +1344,7 @@ div.messages ul {
 /*
  * Admin menu overrides
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032012}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032022}}
 #admin-menu {
   margin: 0;
   padding: 0;
@@ -1341,7 +1353,7 @@ div.messages ul {
 /*
  * Devel Module
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032021}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032031}}
 .dev-query {
   background: #eeeeee;
   padding: 30px;
@@ -1350,11 +1362,11 @@ div.messages ul {
 /*
  * Styleguide module tweaks
  */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032030}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032040}}
 #styleguide-header {
   padding: 0 10px;
 }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032033}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032043}}
 #styleguide-header .item-list {
   font-family: inherit;
   margin: 0 20px 20px 0;
@@ -1367,7 +1379,7 @@ div.messages ul {
 Stuff to move into another file
 ===========================================
 */
-@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032048}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/var\/www\/comminfo7\/drupal-7\.23-1\/sites\/all\/themes\/custom\/incourage-at\/sass\/global\.styles\.scss}line{font-family:\000032058}}
 .views-widget-filter-title,
 .views-widget-filter-title input {
   width: 18em;

@@ -623,6 +623,11 @@ div.service-links a {
   text-align: right;
 }
 
+div.service-links ul,
+div.service-links li {
+  display: inline;
+  list-style: none;
+}
 
 /* =============================================================================
  *   Primary, Secondary and Menu Bar region menus
