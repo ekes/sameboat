@@ -144,10 +144,10 @@ function _incourage_events_event_script($node, $caller = '') {
 
   // $body
   $body = strip_tags($node->body['und'][0]['value']) . '. ';
-  // To get the next date re-use the logic in date_token_repeat.
-  $date_text = 'This event happens on [field_date:monthdaytime]';
-  $body .= token_replace($date_text, array('global' => NULL, 'node' => $node));
-  $body .= 'at ' . strip_tags($location) . '. ';
+  $date_field = $node->field_date[LANGUAGE_NONE][0];
+  $date_obj = new DateObject($date_field['value'], $date_field['timezone_db'], date_type_format($date_field['date_type']));
+  $date_text = 'This event happens on ' . date_format_date($date_obj, 'custom', 'F jS \a\t g:ia');
+  $body .= $date_text . ' at ' . strip_tags($location) . '. ';
 
   // $msg
   $msg = incourage_events_format_sms($node);
@@ -187,7 +187,7 @@ function _incourage_events_event_script($node, $caller = '') {
   $script->addSay('You are subscribed to SMS announcements about this event.');
 
   $script->addLabel('options');
-  // $script->addBeep();
+  $script->addBeep();
   $script->addSay(v('Event menu: '));
 
   $invalid_input_msg = v('Invalid input. Please try again.');
