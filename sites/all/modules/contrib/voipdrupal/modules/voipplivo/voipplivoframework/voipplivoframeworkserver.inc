@@ -100,7 +100,7 @@ class VoipPlivoFrameworkServer extends VoipServer {
       'To' => $dest_number,
       # User Number to Call
       'Gateways' => $gateways,
-      # Gateway string to try dialing our separated by comma. First in list will be tried first
+      # Gateway string to try dialing out separated by comma. First in list will be tried first
       'GatewayCodecs' => $gateway_codecs,
       # Codec string as needed by FS for each gateway separated by comma
       'GatewayTimeouts' => $gateway_timeouts,
@@ -376,5 +376,21 @@ class VoipPlivoFrameworkServer extends VoipServer {
     );
     return $voices;
   }
-}
 
+  /**
+   * Plivo Framework version of VoipServer::audioFileMover()
+   *
+   * Intended for use when a message has been recorded on the server, and needs
+   * to be stored or otherwise processed locally.
+   *
+   * @param string $cid
+   *   The cid of $call
+   */
+  static function audioFileMover($audio_url, $callback_function, $args = array()) {
+    $original_call = $args['call'];
+    $original_script = $original_call->getScript();
+    $recording_fid = $original_script->getVar('recording_fid');
+    $file = file_load($recording_fid);
+    $callback_function($file, file_create_url($file->uri), $args);
+  }
+}

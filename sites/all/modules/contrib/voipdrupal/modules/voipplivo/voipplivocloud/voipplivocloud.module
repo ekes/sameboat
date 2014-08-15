@@ -33,6 +33,7 @@ function voipplivocloud_admin_form($configuration) {
     '#title' => t('Plivo Auth Token'),
     '#description' => t("The auth token provided in your Plivo dashboard."),
     '#default_value' => isset($configuration['voipplivocloud_auth_token']) ? $configuration['voipplivocloud_auth_token'] : '',
+    '#attributes' => array('value' => $configuration['voipplivocloud_auth_token']),
   );
 
   $server = voipplivocloud_voipserver_info();

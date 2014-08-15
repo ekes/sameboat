@@ -10,10 +10,3 @@ files[] = includes/voiptroposcript.inc
 files[] = includes/voiptroposerver.inc
 files[] = tropo_webapi/tropo-rest.class.php
 files[] = tropo_webapi/tropo.class.php
-
-; Information added by drupal.org packaging script on 2013-05-13
-version = "7.x-1.0-beta4"
-core = "7.x"
-project = "voipdrupal"
-datestamp = "1368462012"
-

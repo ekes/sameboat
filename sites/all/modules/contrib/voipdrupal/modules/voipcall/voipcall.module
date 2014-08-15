@@ -479,9 +479,12 @@ function voipcall_play_beep() {
  * @see http://drupal.org/node/1354
  */
 function theme_voipcall_play_beep() {
+  //Use output control otherwise this will be broken if caching is enabled
+  ob_start();
   $filename = drupal_get_path('module', 'voipcall') . '/sound/beep.mp3';
-  header('Content-Type: audio/mpeg');
+  drupal_add_http_header('Content-Type', 'audio/mpeg');
   return readfile($filename);
+  ob_end_clean();
 }
 
 /**
@@ -677,6 +680,21 @@ function voipcall_cron() {
   VoipSession::deleteExpiredSessions();
 }
 
+
+/**/
+function voipcall_get_audio_duration($file) {
+  $filepath = drupal_realpath($file->uri);
+  if (preg_match('/\.(mp3)$/i', $file->filename)) {
+    //Mp3 file
+    $mp3 = new mp3file($filepath);
+    $metadata = $mp3->get_metadata();
+    $duration = isset($metadata['Length']) ? $metadata['Length'] : 0;
+  }
+  else {
+    $duration = voipcall_get_wav_duration($filepath);
+  }
+  return $duration;
+}
 
 /*Helper function to calculate WAV lenght
 * Source: http://www.techaspirant.com/php-code-to-find-duration-of-an-audio-file/

@@ -42,7 +42,7 @@ function voipplivocore_call_handler($server, $plivo_action, $cid = NULL) {
   // validate $_REQUEST to avoid hack attempts
   if(!call_user_func('_voip'.$server.'_validate_request')) {
     $msg = '_voip_plivocore_call_handler called with invalid AccountSid: @sid';
-    $params = array('@sid' => $incoming_sid);
+    $params = array('@sid' => $_SERVER["HTTP_X_PLIVO_SIGNATURE"]);
     watchdog('voipplivocore', $msg, $params, WATCHDOG_WARNING);
     return FALSE; // TODO: should we return an error response to the server?
   }
@@ -282,57 +282,47 @@ function voipplivocore_call_handler($server, $plivo_action, $cid = NULL) {
         $script = $call->getScript();
         if($server == 'plivoframework') {
           $plivo_record_url = $_REQUEST['RecordFile'];
-          //only local path supported in Plivo Framework however we need to transfer in Drupal files dir
-          $file = _voipplivocore_transfer_file($plivo_record_url);
-          $file_url = file_create_url($file->uri);
-          $script->setVar('recording_path', $file_url);
-          //We set this to same as recording_path because public url is not available in Plivo
-          $script->setVar('recording_public_url', $file_url);
           $duration = $_REQUEST['RecordingDuration'];
           $digits = $_REQUEST['Digits'];
+          //only local path supported in Plivo Framework however we need to transfer in Drupal files dir
+
+          //We set this to same as recording_path because public url is not available in Plivo
+          $file = _voipplivocore_file_save_upload($plivo_record_url);
+          $script->setVar('recording_public_url', file_create_url($file->uri));
+          $script->setVar('recording_fid', $file->fid);
+          $script->setVar('recording_public_url', $file_url);
         }
         else {
           //Plivo Cloud
-          if ($_REQUEST['RecordingDuration'] == -1){
+          if ($_REQUEST['RecordingDuration'] == -1) {
             //we must set hangup before _voipplivocore_transfer_file() as that
             //function takes long time, therfore resulting in process_hangup
             //command from Plivo to be executed before this call is set to hangup
-            $call->SetCallStatus(VoipCall::COMPLETED);
+            /*$call->SetCallStatus(VoipCall::COMPLETED);
             $call->setHangupReason(VoipCall::HANGUP_BY_USER);
-            $call->save();
+            $call->save();*/
+            voipplivocore_update_call_status($call, 'completed');
+          }
+
+          if($_REQUEST['status'] == 'completed') {
+            voipplivocore_update_call_status($call, 'completed');
           }
           $plivo_record_url = $_REQUEST['RecordUrl'];
-          //Transfer the file to local server
-          $file = _voipplivocore_transfer_file($plivo_record_url);
-          $file_url = file_create_url($file->uri);
-          $script->setVar('recording_path', $file_url);
+
           $script->setVar('recording_public_url', $plivo_record_url);
 
           if ($_REQUEST['RecordingDuration'] > 0) {
             $duration = $_REQUEST['RecordingDuration'];
             $digits = $_REQUEST['Digits'];
           }
-          else if ($_REQUEST['RecordingDuration'] == -1) {
-            //-1 is undocumented feature, learned about after talking with Plivo support (18.2.2013)
-            //@RecordingDuration = -1 in case of hangup
-            $digits = 'hangup';
-            $filepath = drupal_realpath($file->uri);
-            if (preg_match('/\.(mp3)$/i', $file->filename)) {
-              //Mp3 file
-              $mp3 = new mp3file($filepath);
-              $metadata = $mp3->get_metadata();
-              $duration = isset($metadata['Length']) ? $metadata['Length'] : 0;
-            }
-            else {
-              //Wav file
-              $duration = voipcall_get_wav_duration($filepath);
-            }
+          else {
+            //Could be calculated in voipscript_record_callback
+            $duration = -1;
           }
         }
         //Common variables
         $script->setVar('recording_duration', $duration);
         $script->setVar('recording_digits', $digits);
-        $script->setVar('recording_fid', $file->fid);
         $call->setScript($script);
 
         break;
@@ -349,6 +339,7 @@ function voipplivocore_call_handler($server, $plivo_action, $cid = NULL) {
        case 'process_sms_callback':
          $call = _voipplivocore_process_sms_response($call, $_REQUEST);
          if(strtolower($call->getCallChannel()) == 'text') {
+           $call->setEndTime();
            // update sms status
            $call->save();
            // since 'process_sms_callback' is asynchronous, go back
@@ -807,13 +798,14 @@ function voipplivocore_script_handler($server, $call) {
             $processing = FALSE;
             $found = TRUE;
             // report the error to the phone user
-            $language = $script->getLanguage();
-            $voice = $script->getVoice();
+            $voice_id = $script->getVoice();
+            $voice = VoipVoice::getVoice($voice_id);
+            $voice_id = _voipplivocore_get_plivo_voice($voice_id, $server);
             $text = 'Processing error. Please contact your system administrator.';
             // translate the text
-            $langcode = $language;
+            $langcode = $voice->getLanguage();
             $text = t($text, NULL, array('langcode' => $langcode));
-            $response .= "<Speak voice='$voice' language='$language'>$text</Speak>";
+            $response .= "<Speak voice='$voice_id' language='$language'>$text</Speak>";
           }
           break;
 
@@ -991,6 +983,9 @@ function _voipplivocore_send_response($response) {
   $output .= '<Response>';
   $output .= $response;
   $output .= '</Response>';
+  if(voip_debug()) {
+    watchdog('voipplivocore', print_r($output,true));
+  }
   drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
   print $output;
   return TRUE;
@@ -1202,6 +1197,10 @@ function _voipplivocore_generate_audio_response($server, $script, $prompt, $loop
     $voice = VoipVoice::getVoice($voice_id);
     $gender = $voice->getGender();
     $language = $voice->getLanguage();
+
+    //we need to get safe voice id
+    $voice_id = _voipplivocore_get_plivo_voice($voice_id, $server);
+
     $as_tmp = $p->getAs() ? $script->evalString($p->getAs()) : '';
     $as = $as_tmp ? $as_tmp : 'number';
 
@@ -1280,7 +1279,7 @@ function _voipplivocore_numbers_add_space($matches) {
   $number_with_space = implode(" ", $string_array);
   return $number_with_space;
 }
-
+/*
 function _voipplivocore_transfer_file($url) {
   $dest = file_default_scheme() . '://' ;
   $filename = basename($url);
@@ -1290,6 +1289,39 @@ function _voipplivocore_transfer_file($url) {
   $data = file_get_contents($url);
   while($data === FALSE && $i<=100) {
     $data = file_get_contents($url);
+    sleep(1);
+    $i++;
+  }
+  $file = file_save_data($data, $file_destination);
+  return $file;
+}*/
+
+function _voipplivocore_get_plivo_voice($voice_id, $server) {
+  $default_server = VoipServer::getServer($server);
+  $plivo_voices = $default_server->_get_available_voices();
+  if (!isset($plivo_voices[$voice_id])) {
+    if ($gender == 'man') {
+      $voice_id = $default_server->getDefaultManVoice()->getVoiceId();
+    }
+    else if ($gender == 'woman') {
+      $voice_id = $default_server->getDefaultWomanVoice()->getVoiceId();
+    }
+    else {
+      $voice_id = $default_server->getDefaultVoice()->getVoiceId();
+    }
+  }
+  return $voice_id;
+}
+
+function _voipplivocore_file_save_upload($audio_url){
+  $dest = file_default_scheme() . '://' ;
+  $filename = basename($audio_url);
+  $file_destination = file_destination($dest . $filename, FILE_EXISTS_RENAME);
+  //File is not immediately available in plivo for download
+  $i = 0;
+  $data = file_get_contents($audio_url);
+  while($data === FALSE && $i<=100) {
+    $data = file_get_contents($audio_url);
     sleep(1);
     $i++;
   }

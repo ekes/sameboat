@@ -613,4 +613,21 @@ class VoipTropoServer extends VoipServer {
     //Normalize number by adding '+' prefix
     return VoipCall::NormalizeNumber($number);
   }
+
+  /**
+   * Tropo version of VoipServer::audioFileMover()
+   *
+   * Intended for use when a message has been recorded on the server, and needs
+   * to be stored or otherwise processed locally.
+   *
+   * @param string $cid
+   *   The cid of $call
+   */
+  static function audioFileMover($audio_url, $callback_function, $args = array()) {
+    $original_call = $args['call'];
+    $original_script = $original_call->getScript();
+    $recording_fid = $original_script->getVar('recording_fid');
+    $file = file_load($recording_fid);
+    $callback_function($file, file_create_url($file->uri), $args);
+  }
 }

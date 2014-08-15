@@ -40,6 +40,7 @@ function voipplivoframework_admin_form($configuration) {
     '#title' => t('Plivo Auth Token'),
     '#description' => t("The authorization token defined in your Plivo configuration."),
     '#default_value' => isset($configuration['voipplivoframework_auth_token']) ? $configuration['voipplivoframework_auth_token'] : '',
+    '#attributes' => array('value' => $configuration['voipplivoframework_auth_token']),
   );
 
   $server = voipplivoframework_voipserver_info();

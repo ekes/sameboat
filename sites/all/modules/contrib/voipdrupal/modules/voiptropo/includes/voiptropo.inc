@@ -43,18 +43,17 @@ function _voiptropo_call_handler($tropo_action = '', $cid = NULL, $event_type = 
   // process the special case of save_record, which does not have a json
   // object associated with it
   if ($tropo_action == 'save_record') {
-    $file = _voiptropo_file_save_upload();
-    if ($file) {
       $call = VoipCall::load($cid);
       $script = $call->getScript();
-      $script->setVar('recording_path', file_create_url($file->uri));
-      $script->setVar('recording_public_url', file_create_url($file->uri));
       $script->setVar('recording_digits', NULL);
-      $script->setVar('recording_fid', $file->fid);
-      $call->setScript($script);
-      // update the voipcall with the new values
-      $call = $call->save();
-    }
+
+    //@todo: move file
+    $file = _voiptropo_file_save_upload();
+    $script->setVar('recording_public_url', file_create_url($file->uri));
+    $script->setVar('recording_fid', $file->fid);
+    $call->setScript($script);
+    // update the voipcall with the new values
+    $call = $call->save();
     return;
   }
 
@@ -62,7 +61,6 @@ function _voiptropo_call_handler($tropo_action = '', $cid = NULL, $event_type = 
   try {
     // attempt to handle new outbound and inbound voice/text calls
     $session = new Session();
-
 
     $tropo_action = empty($tropo_action) ? $session->getParameters('tropo_action') : $tropo_action;
     if (empty($tropo_action)) {
@@ -432,6 +430,10 @@ function _voiptropo_script_handler($call, &$tropo) {
           $text = $script->evalString($last_say->getText());
           $text = _voiptropo_strip_special_chars($text);
           $voice_id = $last_say->getVoice() ? $last_say->getVoice() : $default_voice;
+
+          //we need to get safe voice id
+          $voice_id = _voiptropo_get_tropo_voice_id($voice_id);
+
           $as = $last_say->getAs() ? $script->evalString($last_say->getAs()) : '';
 
           if (!empty($as) && in_array($as, array('digits', 'date'))) {
@@ -444,6 +446,7 @@ function _voiptropo_script_handler($call, &$tropo) {
             $text = $script->evalString($p->getText());
             $text = _voiptropo_strip_special_chars($text);
             $voice_id = $p->getVoice() ? $p->getVoice() : $default_voice;
+            $voice_id = _voiptropo_get_tropo_voice_id($voice_id);
             $as = $p->getAs() ? $script->evalString($p->getAs()) : '';
             $say_params = array();
             if (!empty($as) && in_array($as, array('digits', 'date'))) {
@@ -538,7 +541,8 @@ function _voiptropo_script_handler($call, &$tropo) {
               $text = $script->evalString($p->getText());
               $text = _voiptropo_strip_special_chars($text);
               $voice_id = $p->getVoice() ? $p->getVoice() : $default_voice;
-              //watchdog("debug", "Say: voice: $voice_id, language: $language, text: $text");
+              //we need to get safe voice id
+              $voice_id = _voiptropo_get_tropo_voice_id($voice_id);
               $as = $p->getAs() ? $script->evalString($p->getAs()) : '';
               $say_params = array();
               if ($as == 'digits') {
@@ -906,6 +910,10 @@ function _voiptropo_get_input($type, $call, $cmd, $script, &$tropo) {
     $mode = $script->evalString($cmd->getParam('mode'));
 
     $recognize_as_tmp = $script->evalString($cmd->getParam('recognize_as'));
+
+    //we need to get safe voice id
+    $default_voice = _voiptropo_get_tropo_voice_id($default_voice);
+
     $default_region = VoipTropoServer::getVoiceRegionId($default_voice, $default_language);
     $recognizer = $recognize_as_tmp ? $recognize_as_tmp : $default_region;
 
@@ -940,6 +948,8 @@ function _voiptropo_get_input($type, $call, $cmd, $script, &$tropo) {
     $text = $script->evalString($p->getText());
     $text = _voiptropo_strip_special_chars($text);
     $voice_id = $p->getVoice() ? $p->getVoice() : $default_voice;
+    //we need to get safe voice id
+    $voice_id = _voiptropo_get_tropo_voice_id($voice_id);
     $as = $p->getAs() ? $script->evalString($p->getAs()) : '';
     if (empty($as) && !in_array($as, array('digits', 'date'))) {
       $as = 'number';
@@ -1370,17 +1380,7 @@ function _voiptropo_handle_ongoing_calls($result, $tropo_action, $cid, $event_ty
           $rec_fid = $script->getVar('recording_fid');
           $file = file_load($rec_fid);
           if ($file) {
-            $filepath = drupal_realpath($file->uri);
-            if (preg_match('/\.(mp3)$/i', $file->filename)) {
-              //Mp3 file
-              $mp3 = new mp3file($filepath);
-              $metadata = $mp3->get_metadata();
-              $duration = isset($metadata['Length']) ? $metadata['Length'] : 0;
-            }
-            else {
-              //Wav file
-              $duration = voipcall_get_wav_duration($filepath);
-            }
+            $duration = voipcall_get_audio_duration($file);
             $script->setVar('recording_duration', $duration);
           }
         }
@@ -1404,6 +1404,7 @@ function _voiptropo_handle_ongoing_calls($result, $tropo_action, $cid, $event_ty
       case 'process_send_sms':
       case 'process_sms_callback':
         $call = _voiptropo_process_sms_response($call, $event_type);
+        $call->setEndTime();
         break;
     }
   }
@@ -1439,4 +1440,26 @@ function _voiptropo_handle_ongoing_calls($result, $tropo_action, $cid, $event_ty
   $voip_session->save();
 
   return $call;
+}
+
+//Get safe voice Tropo
+function _voiptropo_get_tropo_voice_id($voice_id) {
+  //we need to get safe voice id
+  $server = VoipServer::getServer('tropo');
+  $tropo_voices = $server->_get_available_voices();
+  if (!isset($tropo_voices[$voice_id])) {
+    $voice = VoipVoice::getVoice($voice_id);
+    $gender = $voice->getGender();
+    if ($gender == 'man') {
+      $voice_id = $server->getDefaultManVoice()->getVoiceId();
+    }
+    else if ($gender == 'woman') {
+      $voice_id = $server->getDefaultWomanVoice()->getVoiceId();
+    }
+    else {
+      $voice_id = $server->getDefaultVoice()->getVoiceId();
+    }
+  }
+
+  return $voice_id;
 }

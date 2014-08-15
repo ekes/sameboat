@@ -237,10 +237,60 @@ function voip_theme() {
   return $items;
 }
 
+/**
+ * Implements hook_cron().
+ *
+ * Works off queue, but if item return false it doesn't delete it.
+ * Allowing for item to be released and tried again later.
+ */
+function voip_cron() {
+  $queue = DrupalQueue::get('voipdrupal_audiofilemover');
+  $end = time() + 15;
+  while (time() < $end && ($item = $queue->claimItem())) {
+    if (_voip_audiofilemover_callback($item->data)) {
+      $queue->deleteItem($item);
+    }
+    else {
+      $item->data['retries']++;
+      if ($item->data['retries'] > 2) {
+        // Still delete item, been tried again and it is still not working.
+        $queue->deleteItem($item);
+      }
+      else {
+        // Store retry count.
+        db_update('queue')->fields(
+          array(
+          'data' => serialize($item->data),
+        ))
+        ->condition('item_id', $item->item_id)
+        ->execute();
+      }
+    }
+  }
+}
+
 
 /**
  * Internal functions
  */
+
+/**
+ * Queue cron worker callback.
+ *
+ * @see VoipServer::audioFileMover().
+ */
+function _voip_audiofilemover_callback($item) {
+  $filename = basename($item['audio_url']);
+  $file_destination = file_destination(file_default_scheme() . '://' . $filename, FILE_EXISTS_RENAME);
+  if ($data = @file_get_contents($item['audio_url'])) {
+    $file = file_save_data($data, $file_destination);
+    $item['callback_function']($file, $item['audio_url'], $item['args']);
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
 
 /**
  * Voip server menu title callback.

@@ -3,7 +3,7 @@
 
 /**
  * @file
- * Implementation of Twilio-related functionality
+ * Implementation of KooKoo-related functionality
  */
 
 /**
@@ -11,9 +11,9 @@
  */
 
 /*
- * Process incoming requests and responses from Twilio
+ * Process incoming requests and responses from KooKoo
  *
- * @param string $twilio_action set to the action to be executed.
+ * @param string $kookoo_action set to the action to be executed.
  *   It can assume any of the following values:
  *   - process_conference, to handle responses to conference call requests
  *   - process_inbound_calls, to handle incoming calls
@@ -32,50 +32,51 @@
  *
  * @return void
  */
-function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
-  if (voip_debug()) {
-    $msg = "in voiptwilio_call_handler() with twilio_action: $twilio_action, cid: $cid, and _REQUEST: " . print_r($_REQUEST, TRUE);
-    $vars = array();
-    watchdog('voiptwilio', $msg, $vars, WATCHDOG_INFO);
+function _voipkookoo_call_handler($kookoo_action = NULL, $cid = NULL) {
+  if(!$kookoo_action) {
+    //Only outbound calls/sms have kookoo_action in url, otherwise retrieve from event
+    $kookoo_action = _voipkookoo_event_to_actions($_REQUEST['event']);
   }
-  // validate $_REQUEST['AccountSid'] to avoid hack attempts
-  $server = VoipServer::getServer('twilio');
+
+  if (voip_debug()) {
+    $msg = "in voipkookoo_call_handler() with kookoo_action: $kookoo_action, cid: $cid, and _REQUEST: " . print_r($_REQUEST, TRUE);
+    $vars = array();
+    watchdog('voipkookoo', $msg, $vars, WATCHDOG_INFO);
+  }
+  //@todo: validate $_REQUEST['AccountSid'] to avoid hack attempts
+  /*$server = VoipServer::getServer('kookoo');
   $server_config = $server->getConfig();
-  $account_sid = $server_config['voiptwilio_account_sid'];
+  $account_sid = $server_config['voipkookoo_account_sid'];
   $incoming_sid = $_REQUEST['AccountSid'];
   if ($account_sid != $incoming_sid) {
-    $msg = '_voip_twilio_call_handler called with invalid AccountSid: @sid';
+    $msg = '_voip_kookoo_call_handler called with invalid AccountSid: @sid';
     $params = array('@sid' => $incoming_sid);
-    watchdog('voiptwilio', $msg, $params, WATCHDOG_WARNING);
+    watchdog('voipkookoo', $msg, $params, WATCHDOG_WARNING);
     return FALSE; // TODO: should we return an error response to the server?
-  }
+  }*/
 
   // determine channel, network, to and from attributes
-  if ($twilio_action == 'process_inbound_text'
-    || $twilio_action == 'process_sms_framework') {
-    if (isset($_REQUEST['Channel'])) {
-      $channel = $_REQUEST['Channel'];
-    }
-    else {
-      $channel = 'text';
-    }
-
+  if ($kookoo_action == 'process_inbound_text'
+    || $kookoo_action == 'process_sms_framework') {
+    $channel = 'text';
     $network = 'sms';
-    $from = $_REQUEST['From'];
-    $to = $_REQUEST['To'];
+    $from = $_REQUEST['cid'];
+    //there is no to field in Kookoo, but we might have it if from SMS framework
+    //otherwise use KOOKOO SMS NUMBER
+    $to = isset($_REQUEST['To']) ? $_REQUEST['To'] : KOOKOO_SMS_NUMBER;
   }
   else {
     $channel = 'voice';
     $network = 'voip';
-    $from = $_REQUEST['Caller'];
-    $to = $_REQUEST['Called'];
+    $from = isset($_REQUEST['cid']) ? $_REQUEST['cid'] : $_REQUEST['cid_e164'] ;
+    $to = $_REQUEST['called_number'];
   }
 
   // load session and cid based on request parameters
 
   // 'process_hangup' for incoming calls does not come with a $cid
-  if (($twilio_action == 'process_hangup') && (!$cid)) {
-    $call_id = $_REQUEST['CallSid'];
+  if (/*($kookoo_action == 'process_hangup') && */ !$cid) {
+    $call_id = $_REQUEST['sid'];
     $cid = VoipCall::getCidFromCallId($call_id);
   }
 
@@ -97,47 +98,46 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
   // load the already existing call object, if any
   if ($cid) {
     $call = VoipCall::load($cid);
+    // if the call is already hang up, ignore everything
+    // Note: This happens whenever a call is hang up in the middle of a recording.
+    // In that case, KooKoo sends a notification both as part of the record
+    // response as well as via a hangup request
+    $is_hangup = $call->isHangup();
+    if($is_hangup){
+      if (voip_debug()) {
+        $msg = "Call with cid: $cid is already hang up.";
+        $vars = array();
+        watchdog('voipkookoo', $msg, $vars, WATCHDOG_INFO);
+      }
+      return;
+    }
   }
   else {
     $call = new VoipCall();
   }
 
-  // if the call is already hang up, ignore everything
-  // Note: This happens whenever a call is hang up in the middle of a recording.
-  // In that case, Twilio sends a notification both as part of the record
-  // response as well as via a hangup request
-  $is_hangup = $call->isHangup();
-  if($is_hangup){
-    if (voip_debug()) {
-      $msg = "Call with cid: $cid is already hang up.";
-      $vars = array();
-      watchdog('voiptwilio', $msg, $vars, WATCHDOG_INFO);
-    }
-    return;
-  }
-
   // handle incoming call and text requests
-  if ($twilio_action == 'process_inbound_calls') {
-    $call_sid = $_REQUEST['CallSid']; // unique identifier of the call, 34 char
+  if ($kookoo_action == 'process_inbound_calls') {
+    $call_sid = $_REQUEST['sid']; // A unique identifier for this call, generated by KooKoo.
     $call->setCallId($call_sid);
-    $call->setSource('twilio');
-    $dir_tmp = ($_REQUEST['Direction'] == 'inbound')
-                         ? VoipCall::INBOUND
-                         : VoipCall::OUTBOUND_DIAL;
+    $call->setSource('kookoo');
+    $dir_tmp = (isset($_REQUEST['outbound_sid']))
+                         ? VoipCall::OUTBOUND_DIAL
+                         : VoipCall::INBOUND;
     $call->setDirection($dir_tmp);
     $call->setAnsweredBy(VoipCall::ANSWERED_DRUPAL);
     $call->setCallStatus(VoipCall::RINGING);
     $call->setStartTime(REQUEST_TIME);
-	$call->setCallerNumber($from);
+	  $call->setCallerNumber($from);
     $call->setDestNumber($to);
     $call->setCallChannel($channel);
     $call->setCallNetwork($network);
   }
-  else if ($twilio_action == 'process_inbound_text'
-    || $twilio_action == 'process_sms_framework') {
-    $call_sid = $_REQUEST['SmsSid']; // unique identifier of the text, 34 char
+  else if ($kookoo_action == 'process_inbound_text'
+    || $kookoo_action == 'process_sms_framework') {
+    $call_sid = $_REQUEST['sid']; // unique identifier of the text, 34 char
     $call->setCallId($call_sid);
-    $call->setSource('twilio');
+    $call->setSource('kookoo');
     $dir_tmp = VoipCall::INBOUND;
     $call->setDirection($dir_tmp);
     $call->setAnsweredBy(VoipCall::ANSWERED_DRUPAL);
@@ -148,23 +148,17 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
     $call->setDestNumber($to);
     $call->setCallChannel($channel);
     $call->setCallNetwork($network);
-    if($twilio_action == 'process_sms_framework') {
+    if($kookoo_action == 'process_sms_framework') {
       $call->setCallOrigin('smsframework');
     }
   }
   else {
     // handle ongoing calls
     // handle first response to an outbound call
-    if ($twilio_action == 'process_outbound_calls') {
-      // store twilio call id for all outbound calls
-      $call_id = $_REQUEST['CallSid'];
+    if ($kookoo_action == 'process_outbound_calls') {
+      // store kookoo call id for all outbound calls
+      $call_id = $_REQUEST['sid'];
       $call->setCallId($call_id);
-      $answered_by = $_REQUEST['AnsweredBy'];
-      if ($answered_by) {
-        $tmp = ($answered_by == 'human') ? VoipCall::ANSWERED_HUMAN
-                                         : VoipCall::ANSWERED_MACHINE;
-        $call->setAnsweredBy($tmp);
-      }
     }
   }
 
@@ -176,22 +170,34 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
     $call->setCallNetwork($network);
   }
   if (!$call->getCallerNumber()) {
-    $call->setCallerNumber($_REQUEST['Caller']);
-  }
-  if (!$call->getCallerName()) {
-    $call->setCallerName($_REQUEST['CallerName']);
-  }
-  if (!$call->getDestNumber()) {
-    $call->setDestNumber($_REQUEST['Called']);
+    $call->setCallerNumber($_REQUEST['cid_e164']);
   }
 
-  $twilio_call_status = $_REQUEST['CallStatus'];
-  if (empty($twilio_call_status)) {
-    $twilio_call_status = $_REQUEST['SmsStatus'];
+  if (!$call->getDestNumber()) {
+    $call->setDestNumber($_REQUEST['called_number']);
+  }
+
+  //@todo: This parameter is sent when the event is "Dial". It specifies whether the dialed call was answered or unanswered.
+  //$kookoo_call_status = $_REQUEST['status'];
+  //@todo: check about sms status?
+  /*if (empty($kookoo_call_status)) {
+    $kookoo_call_status = $_REQUEST['SmsStatus'];
+  }*/
+
+  if($_REQUEST['event'] == 'Hangup' || $_REQUEST['event'] == 'Disconnect') {
+    $kookoo_call_status = 'completed';
+  }
+  else if (isset($_REQUEST['status'])) {
+    //If the event is "Dial". It specifies whether the dialed call was answered or unanswered.
+    //If the event is outbound. It specifies 'answered/ring/invalid_number/busy/network_congestion/exception'
+    $kookoo_call_status = $_REQUEST['status'];
+  }
+  else {
+    $kookoo_call_status = 'in-progress';
   }
 
   // set start time for the call
-  if ($twilio_call_status == 'in-progress') {
+  if ($kookoo_call_status == 'in-progress') {
     $start_time = $call->getStartTime();
     if (!$start_time) {
       // start counting the call duration
@@ -201,23 +207,23 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
 
   // update call status
   // NOTE: sms callbacks do not have a call status associated with them
-  // NOTE: when the user hangs up during a recording, Twilio sends the record
+  // NOTE: when the user hangs up during a recording, KooKoo sends the record
   // response with the recording data AND CallStatus set to 'completed'. Once that is done,
-  // Twilio calls our process_hangup url to inform, once again, that the call has been hanged.
+  // KooKoo calls our process_hangup url to inform, once again, that the call has been hanged.
 
-  if (     $twilio_action == 'process_sms_callback'
-        || $twilio_action == 'process_inbound_text'
-        || $twilio_action == 'process_sms_framework'
-        || $twilio_action == 'process_send_sms'
-        || $twilio_action == 'process_record'
-        || $twilio_action == 'process_record_mp3'
-        || $twilio_action == 'process_empty_recording'
-        || $twilio_action == 'process_wait'
+  if ($kookoo_action == 'process_sms_callback'
+        || $kookoo_action == 'process_inbound_text'
+        || $kookoo_action == 'process_sms_framework'
+        || $kookoo_action == 'process_send_sms'
+        || $kookoo_action == 'process_record'
+        || $kookoo_action == 'process_record_mp3'
+        || $kookoo_action == 'process_empty_recording'
+        || $kookoo_action == 'process_wait'
   ) {
     $call->SetCallStatus(VoipCall::IN_PROGRESS);
   }
   else {
-    $call = voiptwilio_update_call_status($call, $twilio_call_status);
+    $call = voipkookoo_update_call_status($call, $kookoo_call_status);
   }
 
   // save the call and initialize its script before setting internal variables
@@ -227,34 +233,18 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
 
   // set text channel variables
   if (strtolower($channel) == 'text') {
-    $call->setTextVariables($_REQUEST['Body'], $_REQUEST['From'], $_REQUEST['To'], $network);
-  }
-
-  // update script variables with call location, if available
-  if (isset($_REQUEST['FromCity'])) {
-    $call_location = array();
-    $call_location['caller_city'] = $_REQUEST['FromCity'];
-    $call_location['caller_state'] = $_REQUEST['FromState'];
-    $call_location['caller_zip'] = $_REQUEST['FromZip'];
-    $call_location['caller_country'] = $_REQUEST['FromCountry'];
-    $call_location['called_city'] = $_REQUEST['ToCity'];
-    $call_location['called_state'] = $_REQUEST['ToState'];
-    $call_location['called_zip'] = $_REQUEST['ToZip'];
-    $call_location['called_country'] = $_REQUEST['ToCountry'];
-    $script = $call->getScript();
-    $script->setVar('call_location', $call_location);
-    $call->setScript($script);
+    $call->setTextVariables($_REQUEST['message'], $_REQUEST['cid'], '', $network);
   }
 
   $is_hangup = $call->isHangup();
 
   // process responses to requests previously-issued by the call script
   if (!$is_hangup) {
-    switch ($twilio_action) {
+    switch ($kookoo_action) {
       default:
-        $msg = 'Invalid twilio_action: @action';
-        $params = array('action' => $twilio_action);
-        $call->report_error('voiptwilio', $msg, $params);
+        $msg = 'Invalid kookoo_action: @action';
+        $params = array('action' => $kookoo_action);
+        $call->report_error('voipkookoo', $msg, $params);
         return FALSE;
         break;
       case 'process_inbound_calls':
@@ -267,52 +257,50 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
         // been processed in the previous lines
         break;
       case 'process_conference':
-        // NOTE: in Twilio, conference calls are executed via the dial command
+        // NOTE: in KooKoo, conference calls are executed via the dial command
 //       and, therefore, should be processed in the same way
       case 'process_dial':
-        $call = _voiptwilio_process_dial_response($call, $_REQUEST);
+        $call = _voipkookoo_process_dial_response($call, $_REQUEST);
         break;
       case 'process_get_input':
         $script = $call->getScript();
-        $input = ($_REQUEST['Digits'] == 'no_input')
-                 ? '' :  $_REQUEST['Digits'];
+        //@todo: how to handle no_input in kookoo?
+        $input = ($_REQUEST['data'] == 'no_input')
+                 ? '' :  $_REQUEST['data'];
         $script->setVar('input_digits', $input);
         $call->setScript($script);
         break;
       case 'process_record':
-      case 'process_record_mp3':
-        $suffix = ($twilio_action == 'process_record') ? '.wav' : '.mp3';
         $script = $call->getScript();
-        $twilio_record_url = $_REQUEST['RecordingUrl'] . $suffix;
-        $script->setVar('recording_public_url', $twilio_record_url);
-        $script->setVar('recording_duration', $_REQUEST['RecordingDuration']);
-        $script->setVar('recording_digits', $_REQUEST['Digits']);
-        //$script->setVar('recording_fid', $file->fid);
-        $call->setScript($script);
-        // check if the call hang up in the middle of the recording
-        if($_REQUEST['Digits'] == 'hangup'){
-          voiptwilio_update_call_status($call, 'completed');
+        if($_REQUEST['status'] == 'silence') {
+          //empty recording
+          $script->setVar('recording_path', '');
+          $script->setVar('recording_public_url', '');
+          $script->setVar('recording_duration', 0);
+          $script->setVar('recording_digits', NULL);
+          $script->setVar('recording_fid', NULL);
         }
-        break;
-      case 'process_empty_recording':
-        $script = $call->getScript();
-        $script->setVar('recording_path', '');
-        $script->setVar('recording_public_url', '');
-        $script->setVar('recording_duration', 0);
-        $script->setVar('recording_digits', NULL);
-        $script->setVar('recording_fid', NULL);
+        else {
+          $kookoo_record_url = $_REQUEST['data'];
+          $script->setVar('recording_public_url', $kookoo_record_url);
+          $script->setVar('recording_duration', $_REQUEST['record_duration']);
+
+          // NOTE: unlike other providers, KooKoo does not return the digit pressed
+          //$script->setVar('recording_digits', $_REQUEST['Digits']);
+        }
         $call->setScript($script);
         break;
 
+    //@todo: currently we don't have sms
       case 'process_send_sms':
       case 'process_sms_callback':
-        $call = _voiptwilio_process_sms_response($call, $_REQUEST);
-        $call->setEndTime();
+        $call = _voipkookoo_process_sms_response($call, $_REQUEST);
         if (strtolower($call->getCallChannel()) == 'text') {
+          $call->setEndTime();
           // update sms status
           $call->save();
           // since 'process_sms_callback' is asynchronous, go back
-          if ($twilio_action == 'process_sms_callback') {
+          if ($kookoo_action == 'process_sms_callback') {
             return;
           }
         }
@@ -321,16 +309,33 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
   }
 
   if ($is_hangup) {
+    //In case of hangup during recording Kookoo will send recording
+    //information in this event
+    if($_REQUEST['process'] == 'record') {
+      $script = $call->getScript();
+      //@todo: disabled saving the prompts as it takes >30sec to download which will cause timeout
+      $kookoo_record_url = $_REQUEST['data'];
+      $script->setVar('recording_path', $kookoo_record_url);
+      $script->setVar('recording_public_url', $kookoo_record_url);
+      $script->setVar('recording_duration', $_REQUEST['record_duration']);
+      $call->setScript($script);
+    }
     // determine call duration
     $end_time = $call->setEndTime();
     $start_time = $call->getStartTime();
-    if ($start_time) {
-      $duration  = $end_time - $start_time;
+
+    if ($call->getDirection() == VoipCall::OUTBOUND) {
+      //For outbound calls get duration from Kookoo
+      $duration = isset($_REQUEST['duration']) ? $_REQUEST['duration'] : NULL;
     }
     else {
-      // get call duration from Twilio
-      $duration = isset($_REQUEST['CallDuration']) ? $_REQUEST['CallDuration'] : NULL;
+      // get call duration from KooKoo
+      $duration = isset($_REQUEST['total_call_duration']) ? $_REQUEST['total_call_duration'] : NULL;
     }
+    if(!isset($duration) && $start_time) {
+      $duration  = $end_time - $start_time;
+    }
+
     $call->setDuration($duration);
   }
 
@@ -352,10 +357,10 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
   $stored_user = $user;
   $call->loadGlobalUser();
   if (voip_debug()) {
-    watchdog('voiptwilio', 'Logged user %uid in.', array('%uid' => $user->uid));
+    watchdog('voipkookoo', 'Logged user %uid in.', array('%uid' => $user->uid));
   }
 
-  if ($twilio_action == 'process_inbound_text') {
+  if ($kookoo_action == 'process_inbound_text') {
     $script = $call->getScript();
     $text_handler = $script->getVar('text_handler');
     $text_handler = !empty($text_handler) ? $text_handler : variable_get('voipcall_default_text_handler', '');
@@ -375,19 +380,19 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
   }
 
   // process the call script
-  $rc = _voiptwilio_script_handler($call);
+  $rc = _voipkookoo_script_handler($call);
 
   // If global user has been replaced for call user.
   // Process shouldn't go further, so just for good practice.
   if(! empty($stored_user)) {
     $user = $stored_user;
     if (voip_debug()) {
-      watchdog('voiptwilio', 'Reverted to logged in user %uid', array('%uid' => $user->uid));
+      watchdog('voipkookoo', 'Reverted to logged in user %uid', array('%uid' => $user->uid));
     }
   }
 
   return; // NOTE: this function MUST NOT return any value.  If it does, the
-//       output to Twilio will get messed up with Drupal hmtl...
+//       output to KooKoo will get messed up with Drupal hmtl...
 }
 
 /**
@@ -397,10 +402,10 @@ function _voiptwilio_call_handler($twilio_action, $cid = NULL) {
  *
  * @return boolean.  TRUE on success or FALSE on failure.  Check voip_error() for processing failure.
  */
-function _voiptwilio_script_handler($call) {
+function _voipkookoo_script_handler($call) {
   if (voip_debug()) {
     $msg = 'Entering script_handler with voipcall: ' . print_r($call, TRUE);
-    watchdog('voiptwilio', $msg, array(), WATCHDOG_INFO);
+    watchdog('voipkookoo', $msg, array(), WATCHDOG_INFO);
   }
 
   $rc = TRUE;
@@ -436,7 +441,7 @@ function _voiptwilio_script_handler($call) {
             $response .= '<Hangup/>';
             $msg = 'Script @name ended without a "hangup" command.';
             $params = array('@name' => $script->getName());
-            watchdog('voiptwilio', $msg, $params, WATCHDOG_WARNING);
+            watchdog('voipkookoo', $msg, $params, WATCHDOG_WARNING);
             $call->setHangupReason(VoipCall::HANGUP_SCRIPT_END);
         }
       }
@@ -455,14 +460,14 @@ function _voiptwilio_script_handler($call) {
             '@script_name' => $script->getName(),
             '@script' => print_r($script, true),
           );
-          $call->report_error('voiptwilio', $msg, $params);
+          $call->report_error('voipkookoo', $msg, $params);
           $rc = FALSE;
           $processing = FALSE;
           break;
 
         case 'VoipCmdBeep':
           $beep_url = url('voip/sound/beep', array('absolute' => TRUE));
-          $response .= "<Play>$beep_url</Play>";
+          $response .= "<playaudio>$beep_url</playaudio>";
           break;
 
         case 'VoipCmdDial':
@@ -471,7 +476,7 @@ function _voiptwilio_script_handler($call) {
           if (strtolower($call->getCallChannel()) == 'text') {
             //In case VoipCmdDial is called within text channel then instead of transfer we call the sender.
             //we are starting a call, hangup() the existing session
-            $response .= '<Hangup/>';
+            $response .= '<hangup></hangup>';
 
             if (!$number) {
               $number = $call->getCallerNumber();
@@ -485,28 +490,25 @@ function _voiptwilio_script_handler($call) {
             $processing = FALSE;
           }
           else {
-            $menu_path = 'voip/twilio/callhandler';
-            $cid = $call->getCid();
-            $response_url = $menu_path . '/process_dial/' . $cid;
-            $action = url($response_url, array('absolute' => TRUE));
-            $method = 'POST';
+            //@todo: no action attr how do we get response?
+            //$menu_path = 'voip/kookoo/callhandler';
+            //$cid = $call->getCid();
+            //$response_url = $menu_path . '/process_dial/' . $cid;
+            //$action = url($response_url, array('absolute' => TRUE));
+            // $method = 'POST';
 
-            // TODO: implement the other features such as multi-dial, url(for private scripts) and sendDigits?
-            $timeout = $script->evalString($cmd->getParam('timeout', 30));
-            $hangup_on_star =  $script->evalString($cmd->getParam('hangup_on_star', false));
-            $hangup_on_star =  $hangup_on_star ? 'true' : 'false';
-            $time_limit = $script->evalString($cmd->getParam('time_limit', '14400'));
+            $timeout = $script->evalString($cmd->getParam('timeout', 30))*1000; //ms
+            //$hangup_on_star =  $script->evalString($cmd->getParam('hangup_on_star', false));
+            //$hangup_on_star =  $hangup_on_star ? 'true' : 'false';
+            $time_limit = $script->evalString($cmd->getParam('time_limit', '14400')); //@todo is this also in ms?
             $caller_number = $script->evalString($script->getVar('caller_number'));
             $caller_id = $script->evalString($cmd->getParam('caller_id', $caller_number));
-            $response .= '<Dial action="' . $action
-                            . '" method="' . $method
-                            . '" timeout="' . $timeout
-                            . '" hangupOnStar="' . $hangup_on_star
-                            . '" timeLimit="' . $time_limit
-                            . '" callerId="' . $caller_id
+            $response .= '<dial timeout="' . $timeout
+                            . '" limittime="' . $time_limit
+                            . '" caller_id="' . $caller_id
                             . '" >';
-            $response .= '<Number>' . $number . '</Number>';
-            $response .= '</Dial>';
+            $response .=  $number;
+            $response .= '</dial>';
           }
 
           $rc = TRUE;
@@ -515,32 +517,31 @@ function _voiptwilio_script_handler($call) {
 
         case 'VoipCmdGetInput':
           $call->setCallStatus(VoipCall::IN_PROGRESS);
-          $menu_path = 'voip/twilio/callhandler';
-          $cid = $call->getCid();
-          $response_url = $menu_path . '/process_get_input/' . $cid;
-          $action = url($response_url, array('absolute' => TRUE));
-          $method = 'POST';
-          $timeout = $script->evalString($cmd->getParam('timeout', 5));
+          //$menu_path = 'voip/kookoo/callhandler';
+          //$cid = $call->getCid();
+          //$response_url = $menu_path . '/process_get_input/' . $cid;
+          //$action = url($response_url, array('absolute' => TRUE));
+          //$method = 'POST';
+          $timeout = $script->evalString($cmd->getParam('timeout', 5)) * 1000; //KooKoo timeout is in ms
           $end_key = $script->evalString($cmd->getParam('end_key', ''));
           $num_digits = $script->evalString($cmd->getParam('num_digits'));
           $prompt = $cmd->getParam('prompt');
-          $response .= '<Gather action="' . $action
-                            . '" method="' . $method
-                            . '" timeout="' . $timeout
-                            . '" finishOnKey="' . $end_key;
+          $response .= '<collectdtmf o="' . $timeout
+                            . '" t="' . $end_key;
           if ($num_digits) {
-            $response .=      '" numDigits="' . $num_digits;
+            $response .=      '" l="' . $num_digits;
           }
           $response .= '" >';
           if ($prompt) {
-            $response .=  _voiptwilio_generate_audio_response($script, $prompt);
+            $response .=  _voipkookoo_generate_audio_response($script, $prompt);
           }
-          $response .= '</Gather>';
+          $response .= '</collectdtmf>';
+          //@todo: no redirect method in voip kookoo
           // in case of timeout or empty input, set Digits to 'no_input'
-          $action_timeout = $action . '&amp;Digits=' . 'no_input';
+          /*$action_timeout = $action . '&amp;Digits=' . 'no_input';
           $response .= '<Redirect method="GET">'
                          . $action_timeout
-                         . '</Redirect>';
+                         . '</Redirect>';*/
           $rc = TRUE;
           $processing = FALSE;
           break;
@@ -552,14 +553,14 @@ function _voiptwilio_script_handler($call) {
           if ($script->isError()) {
             $msg = $script->getErrorMessage();
             $params = array();
-            $call->report_error('voiptwilio', $msg, $params);
+            $call->report_error('voipkookoo', $msg, $params);
             $rc = FALSE;
             $processing = FALSE;
             $found = TRUE;
             $text = 'Processing error. Please contact your system administrator.';
             $langcode = $script->getLanguage();
             $text = t($text, NULL, array('langcode' => $langcode));
-            $response .= "<Say>$text</Say>";
+            $response .= "<playtext>$text</playtext>";
           }
           break;
 
@@ -569,14 +570,14 @@ function _voiptwilio_script_handler($call) {
           if ($script->isError()) {
             $msg = $script->getErrorMessage();
             $params = array();
-            $call->report_error('voiptwilio', $msg, $params);
+            $call->report_error('voipkookoo', $msg, $params);
             $rc = FALSE;
             $processing = FALSE;
             $found = TRUE;
             $text = 'Processing error. Please contact your system administrator.';
             $langcode = $script->getLanguage();
             $text = t($text, NULL, array('langcode' => $langcode));
-            $response .= "<Say>$text</Say>";
+            $response .= "<playtext>$text</playtext>";
           }
           break;
 
@@ -588,14 +589,14 @@ function _voiptwilio_script_handler($call) {
             if ($script->isError()) {
               $msg = $script->getErrorMessage();
               $params = array();
-              $call->report_error('voiptwilio', $msg, $params);
+              $call->report_error('voipkookoo', $msg, $params);
               $rc = FALSE;
               $processing = FALSE;
               $found = TRUE;
               $text = 'Processing error. Please contact your system administrator.';
               $langcode = $script->getLanguage();
               $text = t($text, NULL, array('langcode' => $langcode));
-              $response .= "<Say>$text</Say>";
+              $response .= "<playtext>$text</playtext>";
             }
           }
           break;
@@ -610,8 +611,8 @@ function _voiptwilio_script_handler($call) {
             case 'resume':
               if ($call->getCallChannel() != 'text') {
                 // send the hangup request and stop processing script commands
-                // Note: this will trigger a response from Twilio with $twilio_action = process_hangup and CallStatus = completed
-                $response .= '<Hangup/>';
+                // Note: this will trigger a response from KooKoo with $kookoo_action = process_hangup and CallStatus = completed
+                $response .= '<hangup></hangup>';
               }
               break;
             case 'reset':
@@ -628,32 +629,24 @@ function _voiptwilio_script_handler($call) {
 
               if ($call->getCallChannel() != 'text') {
                 // send the hangup request and stop processing script commands
-                // Note: this will trigger a response from Twilio with $twilio_action = process_hangup and CallStatus = completed
-                $response .= '<Hangup/>';
+                // Note: this will trigger a response from KooKoo with $kookoo_action = process_hangup and CallStatus = completed
+                $response .= '<hangup></hangup>';
               }
               break;
           }
-
-
 
           $processing = FALSE;
           break;
 
         case 'VoipCmdJoinConference':
-          // NOTE: Twilio offers several conference call parameters that are not
-//       supported by the VoIP Drupal API. In order to make those
-//       options available, the developer would have to extend the
-//       VoipScript class into something like VoipScriptTwilio.
-//       However, the specific commands of such class would not be
-//       supported by other VoIP servers.
           $call->setCallStatus(VoipCall::IN_PROGRESS);
-          $menu_path = 'voip/twilio/callhandler';
+          /*$menu_path = 'voip/kookoo/callhandler';
           $cid = $call->getCid();
           $response_url = $menu_path . '/process_conference/' . $cid;
           $action = url($response_url, array('absolute' => TRUE));
-          $method = 'POST';
-          $room = $script->evalString($cmd->getParam('room'));
-          $muted =  $script->evalString($cmd->getParam('muted', false));
+          $method = 'POST';*/
+
+          /*$muted =  $script->evalString($cmd->getParam('muted', false));
           $muted =  $muted ? 'true' : 'false';
           $beep =  'true'; // by default, announce new participants
           $start_on_enter =  'true';
@@ -661,21 +654,18 @@ function _voiptwilio_script_handler($call) {
           $wait_url = '';
           $hangup_on_star =  $script->evalString($cmd->getParam('hangup_on_star', false));
           $hangup_on_star =  $hangup_on_star ? 'true' : 'false';
-          $time_limit = '14400'; // max allowed for Twilio calls
-          $response .= '<Dial action="' . $action
+          $time_limit = '14400'; // max allowed for KooKoo calls*/
+          /*$response .= '<Dial action="' . $action
                             . '" method="' . $method
                             . '" hangupOnStar="' . $hangup_on_star
                             . '" timeLimit="' . $time_limit
-                            . '" >';
-          $response .= '<Conference muted="' . $muted
-                            . '" beep="' . $beep
-                            . '" startConferenceOnEnter="' . $start_on_enter
-                            . '" endConferenceOnExit="' . $end_on_exit
-                            . '" waitUrl="' . $wait_url
-                            . '" >';
+                            . '" >';*/
+
+          $room = $script->evalString($cmd->getParam('room'));
+          $response .= '<conference>';
           $response .= $room;
-          $response .= '</Conference>';
-          $response .= '</Dial>';
+          $response .= '</conference>';
+          //$response .= '</Dial>';
           $rc = TRUE;
           $processing = FALSE;
           break;
@@ -692,46 +682,49 @@ function _voiptwilio_script_handler($call) {
 
         case 'VoipCmdRecord':
           $call->setCallStatus(VoipCall::IN_PROGRESS);
-          $menu_path = 'voip/twilio/callhandler';
-          $cid = $call->getCid();
-          $format = $script->evalString($cmd->getParam('format'));
-          if ($format == 'mp3') {
+          //$menu_path = 'voip/kookoo/callhandler';
+          //$cid = $call->getCid();
+          //@todo: other formats are coming soon http://www.kookoo.in/index.php/kookoo-docs#record
+          //$format = $script->evalString($cmd->getParam('format'));
+          $format = 'wav';
+          /*if ($format == 'mp3') {
             $response_url = $menu_path . '/process_record_mp3/' . $cid;
           }
           else {
             // return wav file
             $response_url = $menu_path . '/process_record/' . $cid;
-          }
-          $action = url($response_url, array('absolute' => TRUE));
-          $method = 'POST';
+          }*/
+          //$action = url($response_url, array('absolute' => TRUE));
+          //$method = 'POST';
           $prompt = $cmd->getParam('prompt', '');
           $timeout = $script->evalString($cmd->getParam('timeout', 5));
-          $end_key = $script->evalString($cmd->getParam('end_key', '#'));
+          //$end_key = $script->evalString($cmd->getParam('end_key', '#'));
           $max_length = $script->evalString($cmd->getParam('max_length', 3600));
-          // TODO: implement the "transcribe" feature?"
-          $play_beep = $script->evalString($cmd->getParam('play_beep'));
-          $play_beep = $play_beep ? 'true' : 'false';
+          //$play_beep = $script->evalString($cmd->getParam('play_beep'));
+          //$play_beep = $play_beep ? 'true' : 'false';
+          //@todo: play mp3 beep instead
           if ($prompt) {
-            $response .= _voiptwilio_generate_audio_response($script, $prompt);
+            $response .= _voipkookoo_generate_audio_response($script, $prompt);
           }
-          $response .= '<Record action="' . $action
-                            . '" method="' . $method
-                            . '" timeout="' . $timeout
-                            . '" finishOnKey="' . $end_key
-                            . '" maxLength="' . $max_length
-                            . '" playBeep="' . $play_beep
-                            . '" />';
+          $filename = time();
+
+          $response .= '<record format="' . $format
+                            //. '" silence="' . $timeout
+                            //. '" maxduration="' . $max_length
+                            . '">'.$filename.'</record>';
+          //@todo: how to handle empty recording?
           // in case of empty recording...
-          $response_url = $menu_path . '/process_empty_recording/' . $cid;
+          /*$response_url = $menu_path . '/process_empty_recording/' . $cid;
           $action = url($response_url, array('absolute' => TRUE));
           $response .= '<Redirect method="GET">'
                          . $action
-                         . '</Redirect>';
+                         . '</Redirect>';*/
           $rc = TRUE;
           $processing = FALSE;
           break;
 
-        case 'VoipCmdReject':
+        //@todo: there is no reject in VoIP KooKoo
+        /*case 'VoipCmdReject':
           $call->setHangupReason(VoipCall::HANGUP_REJECTED);
           $reason_tmp = $script->evalString($cmd->getParam('reason'));
           $reason =
@@ -739,28 +732,31 @@ function _voiptwilio_script_handler($call) {
           $response .= "<Reject reason='$reason' />";
           $rc = TRUE;
           $processing = FALSE;
-          break;
+          break;*/
 
         case 'VoipCmdReturn':
           $rc = $script->runReturn();
           if ($script->isError()) {
             $msg = $script->getErrorMessage();
             $params = array();
-            $call->report_error('voiptwilio', $msg, $params);
+            $call->report_error('voipkookoo', $msg, $params);
             $rc = FALSE;
             $processing = FALSE;
             $found = TRUE;
             // report the error to the phone user
 
             $voice_id = $script->getVoice();
-            //Twilio uses gender instead of voice id
+            //KooKoo uses gender instead of voice id
             $voice = VoipVoice::getVoice($voice_id);
-            $gender = $voice->getGender();
+            $voice_id = _voipkookoo_get_kookoo_voice_id($voice_id);
+            //$gender = $voice->getGender();
             $language = $voice->getLanguage();
             $text = 'Processing error. Please contact your system administrator.';
             // translate the text
             $text = t($text, NULL, array('langcode' => $language));
-            $response .= "<Say voice='$gender' language='$language'>$text</Say>";
+            //@todo: wait for KooKoo to introduce voices
+            //$response .= "<Say voice='$gender' language='$language'>$text</Say>";
+            $response .= "<playtext lang='$voice_id'>$text</playtext>";
           }
           break;
 
@@ -781,7 +777,34 @@ function _voiptwilio_script_handler($call) {
           $prompt = $cmd->getParam('prompt');
           $loop = $script->evalString($cmd->getParam('loop'));
           $response .=
-            _voiptwilio_generate_audio_response($script, $prompt, $loop);
+            _voipkookoo_generate_audio_response($script, $prompt, $loop);
+          break;
+
+        case 'VoipCmdSayAs':
+          $server = VoipServer::getServer('kookoo');
+          $server_config = $server->getConfig();
+          $say_as_voice = $server_config['voipcall_sayas_voice_id'];
+          $call->setCallStatus(VoipCall::IN_PROGRESS);
+          $prompt = $cmd->getParam('prompt');
+          $format = $script->evalString($cmd->getParam('format'));
+          $voice_id = $script->evalString($cmd->getParam('voice'));
+          $voice_id = !empty($voice_id) ? $voice_id : $say_as_voice;
+          switch($format) {
+            case 'date':
+              $format_code = 202;
+              break;
+            case 'number':
+              $format_code = 1;
+              break;
+            case 'digit':
+              $format_code = 501;
+              break;
+            case 'currency':
+              $format_code = 402;
+              break;
+
+          }
+          $response .= '<say-as format="'.$format_code.'" lang="'.$voice_id.'">'.$prompt.'</say-as>';
           break;
 
         case 'VoipCmdSendText':
@@ -804,7 +827,7 @@ function _voiptwilio_script_handler($call) {
               $from = $script->evalString($script->getVar('caller_number'));
             }
             if (!$to) {
-              watchdog('voiptwilio', 'Attempt to send '.$network.' to empty number', array(), WATCHDOG_ERROR);
+              watchdog('voipkookoo', 'Attempt to send '.$network.' to empty number', array(), WATCHDOG_ERROR);
               $processing = TRUE;
               break;
             }
@@ -823,16 +846,8 @@ function _voiptwilio_script_handler($call) {
             $processing = TRUE;
           }
           else {
-            $menu_path = 'voip/twilio/callhandler';
-            $cid = $call->getCid();
-            $response_url = $menu_path . '/process_send_sms/' . $cid;
-            $action = url($response_url, array('absolute' => TRUE));
-            $callback_url = $menu_path . '/process_sms_callback/' . $cid;
-            $callback = url($callback_url, array('absolute' => TRUE));
-            $method = 'POST';
-
             if(!$from) {
-              // Note: If no caller number provided, Twilio will automatically try
+              // Note: If no caller number provided, KooKoo will automatically try
               //       to determine an appropriate value depending on whether the
               //       call is inbound or outbound. However, since that number might
               //       not be sms capable, it might incur in a processing error.
@@ -849,38 +864,16 @@ function _voiptwilio_script_handler($call) {
                                 '@script_name' => $script->getName(),
                                 '@script' => print_r($script,true));
                 $msg = "Invalid 'network' parameter '@network' for SendText command in script '@script_name': @script";
-                $call->report_error('voiptwilio', $msg, $params);
+                $call->report_error('voipkookoo', $msg, $params);
                 $rc = FALSE;
                 $processing = FALSE;
                 break;
 
               case 'sms':
-                $response .= '<Sms statusCallback="' . $callback
-                  . '" method="' . $method;
-                if($to){
-                  $response .= '" to="' . $to;
-                }
-                if($from){
-                  $response .= '" from="' . $from;
-                }
-
-                if (strtolower($call->getCallChannel()) == 'voice') {
-                  //From Twilio support: <Sms action> simply does not work as advertised.
-                  //In the SMS-realm it functions as a status callback URL, and not a continuation URL.
-                  //therefore using action only with voice channel
-                  $response .= '" action="' . $action;
-                  // since the 'action' parameter prevents other commands from
-                  // being executed, set $processing to FALSE
-                  $processing = FALSE;
-                }
-                else {
-                  //In sms channel we don't use action callback
-                  $processing = TRUE;
-                }
-                $response .= '" >';
-				        // replace special chars for their html equivalent (http://www.twilio.com/docs/errors/12100)
+                $response .= '<sendsms to="' . $to.'">';
+				        // replace special chars for their html equivalent
                 $response .= htmlspecialchars($text, ENT_NOQUOTES | ENT_HTML401);
-                $response .= '</Sms>';
+                $response .= '</sendsms>';
                 break;
             }
           }
@@ -906,19 +899,17 @@ function _voiptwilio_script_handler($call) {
 
         case 'VoipCmdWait':
           $channel = $call->getCallChannel();
-          $sms_origin = $call->getCallOrigin();
-          if (($channel == 'text' && voipscript_use_sms_framework()) || $sms_origin == 'smsframework') {
-            //Skip wait command in case of text channel when using sms framework
-            //to send messages and in case when we receive text message via sms framework
+          if ($channel != 'voice') {
+            watchdog('voipkookoo', 'Attempt to call addWait() command in SMS message.', array(), WATCHDOG_ERROR);
             $processing = TRUE;
             break;
           }
-          $time_limit = $script->evalString($cmd->getParam('time_limit'));
-          $menu_path = 'voip/twilio/callhandler';
-          $cid = $call->getCid();
-          $response_url = $menu_path . '/process_wait/' . $cid;
-          $redirect_url = url($response_url, array('absolute' => TRUE));
-          $response .= '<Pause length="' . $time_limit . '"/><Redirect>' . $redirect_url . '</Redirect>';
+          $time_limit = $script->evalString($cmd->getParam('time_limit')) / 0.55; //Looks like one period matches 0.55sec.
+          //@todo: check if Equivalent of the wait function?:
+          for ($i = 0; $i < $time_limit; $i++) {
+            $periods .= ". ";
+          }
+          $response .= '<playtext>'.$periods.'</playtext>';
           $processing = FALSE;
           break;
 
@@ -932,29 +923,28 @@ function _voiptwilio_script_handler($call) {
   $call->setScript($script);
   $call->save();
 
-  // send response back to Twilio
+  // send response back to KooKoo
   if ($response) {
 
     //$response .= '<!--' . "_REQUEST: " . print_r($_REQUEST,true) .  "\n" . '-->';
     //$response .= '<!--' . "voipcall: " . print_r($call,true) .  "\n" . '-->';
 
-    _voiptwilio_send_response($response);
+    _voipkookoo_send_response($response);
   }
 
   return $rc;
 }
 
 /**
- * Send responses to Twilio
+ * Send responses to KooKoo
  */
-function _voiptwilio_send_response($response) {
+function _voipkookoo_send_response($response) {
   $output = '<?xml version="1.0" encoding="UTF-8" ?>';
-  $output .= '<Response>';
+  $output .= '<response>';
   $output .= $response;
-  $output .= '</Response>';
+  $output .= '</response>';
 
   drupal_add_http_header('Content-Type', 'text/xml; charset=utf-8');
-  //watchdog('debug', htmlspecialchars($output));
   print $output;
 
   return TRUE;
@@ -962,33 +952,35 @@ function _voiptwilio_send_response($response) {
 
 
 /**
- * Update 'call status' and 'hangup reason' based on Twilio's response
+ * Update 'call status' and 'hangup reason' based on KooKoo's response
  */
-function voiptwilio_update_call_status($call, $twilio_call_status = 'in-progress') {
-  switch ($twilio_call_status) {
+function voipkookoo_update_call_status($call, $kookoo_call_status = 'in-progress') {
+  switch ($kookoo_call_status) {
     default:
       $msg = 'Invalid CallStatus: @status for call cid: @cid';
       $cid = $call->getCid();
       $params = array(
-        '@status' => $twilio_call_status,
+        '@status' => $kookoo_call_status,
         '@cid' => $cid,
       );
-      $call->report_error('voiptwilio', $msg, $params);
+      $call->report_error('voipkookoo', $msg, $params);
       break;
-    case 'failed': // call failed, most likely due to invalid number
+    case 'invalid_number': // call failed, most likely due to invalid number
       $call->setCallStatus(VoipCall::INVALID);
       $call->setHangupReason(VoipCall::HANGUP_INVALID_NUMBER);
       break;
     case 'queued':
       $call->setCallStatus(VoipCall::QUEUED);
       break;
-    case 'ringing':
+    case 'ring':
       $call->setCallStatus(VoipCall::RINGING);
       break;
     case 'in-progress':
+    case 'answered':
       $call->setCallStatus(VoipCall::IN_PROGRESS);
       break;
     case 'completed':
+    case 'success':
       $call->setCallStatus(VoipCall::COMPLETED);
       $hangup_reason = $call->getHangupReason();
       if (!$hangup_reason) {
@@ -999,29 +991,32 @@ function voiptwilio_update_call_status($call, $twilio_call_status = 'in-progress
       $call->setCallStatus(VoipCall::BUSY);
       $call->setHangupReason(VoipCall::HANGUP_BUSY);
       break;
-    case 'no-answer':
+    case 'network_congestion':
+    case 'exception':
       $call->setCallStatus(VoipCall::NO_ANSWER);
       $call->setHangupReason(VoipCall::HANGUP_NO_ANSWER);
       break;
-    case 'canceled':
+    /*case 'canceled':
       $call->setCallStatus(VoipCall::CANCELED);
       $call->setHangupReason(VoipCall::HANGUP_API_REQUEST);
-      break;
+      break;*/
   }
   return $call;
 }
 
+
 /**
  * Process the response to a "dial" script command
  */
-function _voiptwilio_process_dial_response($call, $request) {
+function _voipkookoo_process_dial_response($call, $request) {
   $script = $call->getScript();
 
+  //@todo: how to get sid of dialed number?
   // update the 'dial_sid' script variable
-  $script->setVar('dial_sid', $request['DialCallSid']);
+  //$script->setVar('dial_sid', $request['DialCallSid']);
 
   // update the 'dial_status' script variable
-  $dial_status = $request['DialCallStatus'];
+  $dial_status = $request['status'];
   switch ($dial_status) {
     default:
       $cid = $call->getCid();
@@ -1030,29 +1025,19 @@ function _voiptwilio_process_dial_response($call, $request) {
         '@status' => $dial_status,
         '@cid' => $cid,
       );
-      $call->report_error('voiptwilio', $msg, $params);
+      $call->report_error('voipkookoo', $msg, $params);
       return NULL;
       break;
     case 'answered':
-    case 'completed':
       $script->setVar('dial_status', VoipScript::DIAL_COMPLETED);
       break;
-    case 'busy':
-      $script->setVar('dial_status', VoipScript::DIAL_BUSY);
-      break;
-    case 'no-answer':
+    case 'not_answered':
       $script->setVar('dial_status', VoipScript::DIAL_NO_ANSWER);
-      break;
-    case 'failed':
-      $script->setVar('dial_status', VoipScript::DIAL_FAILED);
-      break;
-    case 'canceled':
-      $script->setVar('dial_status', VoipScript::DIAL_CANCELED);
       break;
   }
 
   // update the 'dial_duration' script variable
-  $duration = $request['DialCallDuration'];
+  $duration = $request['duration']; //This parameter is sent when the event is either "Record" or "Dial". It specifies the amount of time the recording or dial happened.
   if (isset($duration)) {
     $script->setVar('dial_duration', $duration);
   }
@@ -1064,7 +1049,7 @@ function _voiptwilio_process_dial_response($call, $request) {
 /**
  * Process the response to a 'send text' script command
  */
-function  _voiptwilio_process_sms_response($call, $request) {
+function _voipkookoo_process_sms_response($call, $request) {
   $cid = $call->getCid();
   $sms_status_tmp = $request['SmsStatus'];
   switch ($sms_status_tmp) {
@@ -1074,25 +1059,25 @@ function  _voiptwilio_process_sms_response($call, $request) {
         '@status' => $sms_status_tmp,
         '@cid' => $cid,
       );
-      $call->report_error('voiptwilio', $msg, $params);
+      $call->report_error('voipkookoo', $msg, $params);
       return NULL;
       break;
     case 'failed':
-      $msg = 'SMS sending failed for call cid: @cid. Make sure your Twilio number is sms-enabled.';
+      $msg = 'SMS sending failed for call cid: @cid. Make sure your KooKoo number is sms-enabled.';
       $params = array('@cid' => $cid);
-      watchdog('voiptwilio', $msg, $params, WATCHDOG_WARNING);
+      watchdog('voipkookoo', $msg, $params, WATCHDOG_WARNING);
       $text_status = VoipCall::TEXT_FAILED;
       break;
     case 'invalid':
       $msg = 'Invalid SMS parameter for call cid: @cid';
       $params = array('@cid' => $cid);
-      watchdog('voiptwilio', $msg, $params, WATCHDOG_WARNING);
+      watchdog('voipkookoo', $msg, $params, WATCHDOG_WARNING);
       $text_status = VoipCall::TEXT_INVALID;
       break;
     case 'sending':
       $text_status = VoipCall::TEXT_SENDING;
       break;
-    case 'received': // TODO: this is status is not documented in twilio.com. is this a twilio bug?
+    case 'received': // TODO: this is status is not documented in kookoo.com. is this a kookoo bug?
     case 'sent':
       $text_status = VoipCall::TEXT_SENT;
       break;
@@ -1105,7 +1090,7 @@ function  _voiptwilio_process_sms_response($call, $request) {
   return $call;
 }
 
-define('VOIPTWILIO_URL_CHECK', '#(https?://\S+(?<![,.;?\:\!]))#');
+define('VOIPKOOKOO_URL_CHECK', '#(https?://\S+(?<![,.;?\:\!]))#');
 
 /**
  * Generate a prompt to be played to the user
@@ -1124,9 +1109,13 @@ define('VOIPTWILIO_URL_CHECK', '#(https?://\S+(?<![,.;?\:\!]))#');
  *   Integer with the number of times to repeat the prompt
  *
  * @return
- *   The prompt as a TwilioML sequence to be sent to Twilio
+ *   The prompt as a KooKooML sequence to be sent to KooKoo
  */
-function _voiptwilio_generate_audio_response($script, $prompt, $loop = 1) {
+function _voipkookoo_generate_audio_response($script, $prompt, $loop = 1) {
+  $server = VoipServer::getServer('kookoo');
+  $server_config = $server->getConfig();
+  $voipcall_sayas_enabled = $server_config['voipcall_sayas_enabled'];
+  //$say_as_voice = $server_config['voipcall_sayas_voice_id'];
   $response = '';
   if (is_string($prompt) && (substr($prompt, 0, 1) == '^')) {
     $prompt = $script->evalString($prompt);
@@ -1148,23 +1137,24 @@ function _voiptwilio_generate_audio_response($script, $prompt, $loop = 1) {
     $text = $script->evalString($p->getText());
     $voice_id = $p->getVoice() ? $p->getVoice() : $default_voice_id;
     $voice = VoipVoice::getVoice($voice_id);
-    $gender = $voice->getGender();
-    $language = $voice->getLanguage();
+    $voice_id = _voipkookoo_get_kookoo_voice_id($voice_id);
+    //$gender = $voice->getGender();
+    //$language = $voice->getLanguage();
 
     $as_tmp = $p->getAs() ? $p->getAs() : '';
     $as = $as_tmp ? $as_tmp : 'number';
 
     // split the text into audio URLs and text elements
     $elements =
-      preg_split(VOIPTWILIO_URL_CHECK, $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+      preg_split(VOIPKOOKOO_URL_CHECK, $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     // process each element
     $url_flag = FALSE;
     foreach ($elements as $element) {
       $element = trim($element);
       if ($element) {
-        if (_voiptwilio_is_url($element)) {
-          $response .= "<Play>$element</Play>";
+        if (_voipkookoo_is_url($element)) {
+          $response .= "<playaudio>$element</playaudio>";
           $url_flag = TRUE;
         }
         else {
@@ -1177,9 +1167,16 @@ function _voiptwilio_generate_audio_response($script, $prompt, $loop = 1) {
           if ($element) {
             if ($as == 'digits') {
               //Convert numbers into digits
-              $element = _voiptwilio_parse_numbers($element);
+              $element = _voipkookoo_parse_digits($element);
             }
-            $response .= "<Say voice='$gender' language='$language'>$element</Say>";
+            else if($as == 'number') {
+              if ($voipcall_sayas_enabled) {
+                $element = _voipkookoo_parse_numbers($element);
+              }
+            }
+            //$response .= "<Say voice='$gender' language='$language'>$element</Say>";
+            //@todo: VoIP KooKoo:Very soon we will add attributes to this tag to allow you choose the language, TTS engine as well as male or female voice.
+            $response .= "<playtext lang='".$voice_id."'>$element</playtext>";
           }
         }
       }
@@ -1200,32 +1197,86 @@ function _voiptwilio_generate_audio_response($script, $prompt, $loop = 1) {
 /**
  * Check if the given string is a url
  */
-function _voiptwilio_is_url($str) {
+function _voipkookoo_is_url($str) {
   // Note: Although the checking performed is not as complete as
 //       http://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url , it seems to serve our purposes!
-  $rc = preg_match(VOIPTWILIO_URL_CHECK, $str);
+  $rc = preg_match(VOIPKOOKOO_URL_CHECK, $str);
   return $rc;
 }
 
-function _voiptwilio_parse_numbers($str) {
+function _voipkookoo_parse_numbers($str) {
   //preg_match_all("{(\d+)}", $str, $result, PREG_PATTERN_ORDER);
   //return $result;
-  return preg_replace_callback('{(\d+)}', '_voiptwilio_numbers_add_space', $str);
+  return preg_replace_callback('{(\d+)}', '_voipkookoo_numbers_callback', $str);
 }
 
-function _voiptwilio_numbers_add_space($matches) {
-  $string_array = str_split($matches[0]);
-  $number_with_space = implode(" ", $string_array);
-  return $number_with_space;
+function _voipkookoo_numbers_callback($matches) {
+  $server = VoipServer::getServer('kookoo');
+  $server_config = $server->getConfig();
+  $say_as_voice = $server_config['voipcall_sayas_voice_id'];
+  //@todo: language is hardcoded. Fix when Kookoo introduces more languages
+  $ret = '</playtext><say-as format="1" lang="'.$say_as_voice.'">'.$matches[0].'</say-as><playtext lang="EN">';
+  return $ret;
 }
 
-/*Save the audio file from Twilio to local server*/
-/*function _voiptwilio_transfer_file($url) {
-  $dest = file_default_scheme() . '://' ;
-  $filename = basename($url);
-  $file_destination = file_destination($dest . $filename, FILE_EXISTS_RENAME);
-  $data = file_get_contents($url);
-  $file = file_save_data($data, $file_destination);
-  return $file;
+function _voipkookoo_parse_digits($str) {
+  //preg_match_all("{(\d+)}", $str, $result, PREG_PATTERN_ORDER);
+  //return $result;
+  return preg_replace_callback('{(\d+)}', '_voipkookoo_digits_add_space', $str);
 }
-*/
+
+function _voipkookoo_digits_add_space($matches) {
+  $server = VoipServer::getServer('kookoo');
+  $server_config = $server->getConfig();
+  $voipcall_sayas_enabled = $server_config['voipcall_sayas_enabled'];
+  $say_as_voice = $server_config['voipcall_sayas_voice_id'];
+
+
+  if ($voipcall_sayas_enabled) {
+    //@todo: language is hardcoded. Fix when Kookoo introduces more languages
+    $ret = '</playtext><say-as format="501" lang="'.$say_as_voice.'">'.$matches[0].'</say-as><playtext lang="EN">';
+  }
+  else {
+    $string_array = str_split($matches[0]);
+    $number_with_space = implode(" ", $string_array);
+    $ret = $number_with_space;
+  }
+  return $ret;
+}
+
+//Get safe voice Tropo
+function _voipkookoo_get_kookoo_voice_id($voice_id) {
+  //we need to get safe voice id
+  $server = VoipServer::getServer('kookoo');
+  $tropo_voices = $server->_get_available_voices();
+  if (!isset($tropo_voices[$voice_id])) {
+    $voice = VoipVoice::getVoice($voice_id);
+    $gender = $voice->getGender();
+    if ($gender == 'man') {
+      $voice_id = $server->getDefaultManVoice()->getVoiceId();
+    }
+    else if ($gender == 'woman') {
+      $voice_id = $server->getDefaultWomanVoice()->getVoiceId();
+    }
+    else {
+      $voice_id = $server->getDefaultVoice()->getVoiceId();
+    }
+  }
+
+  return $voice_id;
+}
+
+function _voipkookoo_event_to_actions($event) {
+  $events = array(
+    'NewCall' => 'process_inbound_calls',
+    'Record' => 'process_record',
+    'GotDTMF' => 'process_get_input',
+    'Hangup' => 'process_hangup',
+    //@todo:??
+    'Disconnect' => 'process_hangup',
+    'Dial' => 'process_dial',
+    'NewSms' => 'process_inbound_text',
+  );
+
+  return $events[$event];
+}

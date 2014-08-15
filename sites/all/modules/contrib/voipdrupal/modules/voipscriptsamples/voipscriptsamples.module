@@ -89,7 +89,7 @@ function _voipscriptsamples_load_sample_scripts($script_name) {
       '2' => 'weather report',
       '3' => 'sms',
       '4' => 'record',
-	  '5' => 'callback',
+	    '5' => 'callback',
       '#' => 'hang up',
       'i' => 'hang up',
       't' => 'hang up',
@@ -363,7 +363,9 @@ function _voipscriptsamples_get_record_script() {
   $end_key = '#';
   $max_length = 20;
   $format = 'mp3';
+
   $script->addRecord($prompt, $timeout, $end_key, $max_length, $format);
+
 
   $script->addLog('Back from recording (%voipscript_hangup_callback)');
   // reset the hang up handler
@@ -389,9 +391,10 @@ function _voipscriptsamples_get_record_script() {
   $script->addGoto('play_menu');
 
   $script->addLabel('accept_recording');
-  $script->addSay(t('About to start processing the recorded file.'));
   $script->addSet('callback_result',
-    '^_voipscriptsamples_record_callback(%cid, %recording_public_url, %recording_duration)');
+    '^_voipscriptsamples_record_save_file(%recording_public_url, %source, %cid, %recording_duration)');
+  $script->addSay(t('About to start processing the recorded file.'));
+
   $args = array('@result' => '%callback_result');
   $script->addSay(t('The callback returned: @result', $args));
   $script->addGoto('hang_up');
@@ -407,11 +410,11 @@ function _voipscriptsamples_get_record_script() {
  * Callback function associated with the script voipscript_record.  It is called
  * whenever that script records a new entry from the user.
  */
-function _voipscriptsamples_record_callback($cid, $recording_url, $recording_duration = NULL) {
+/*function _voipscriptsamples_record_callback($cid, $recording_url, $recording_duration = NULL) {
   watchdog('voipscriptsamples', "in _voipscriptsamples_record_callback($cid, $recording_url, $recording_duration)");
 
   return 'Success';
-}
+}*/
 
 
 /**
@@ -514,9 +517,38 @@ function _voipscriptsamples_record_on_hang_up($original_call) {
   watchdog('voipscriptsamples', 'About to start processing record on hang up.', $args, WATCHDOG_INFO);
   $original_script = $original_call->getScript();
   $cid = $original_call->getCid();
+  $source = $original_call->getSource();
   $recording_public_url = $original_script->getVar('recording_public_url');
   $recording_duration = $original_script->getVar('recording_duration');
-  $result = _voipscriptsamples_record_callback($cid, $recording_public_url, $recording_duration);
+  $result = _voipscriptsamples_record_save_file($recording_public_url, $source, $cid, $recording_duration);
   $args = array('@result' => $result);
   watchdog('voipscriptsamples', 'The callback returned: @result', $args, WATCHDOG_INFO);
+}
+
+/**
+ * Function executed on hang up as part of voipscript_record script
+ */
+function _voipscriptsamples_record_save_file($recording_public_url, $source, $cid, $duration) {
+  watchdog('debug', "_voipscriptsamples_record_save_file $recording_public_url, $source, $cid, $duration");
+  $server = Voipserver::getServer($source);
+  $call = VoipCall::load($cid);
+  $args = array(
+    'call' => $call,
+    'duration' => $duration,
+  );
+  $server->audioFileMover($recording_public_url, '_voipscriptsamples_record_calculate_duration', $args);
+  return 'Success';
+}
+
+function _voipscriptsamples_record_calculate_duration($file, $audio_url, $args=NULL) {
+  if(isset($args['duration']) && $args['duration'] == -1) {
+    //In case of hangup we get duration -1, so lets calculate it from file object
+    $duration = voipcall_get_audio_duration($file);
+    $original_call = $args['call'];
+    $original_script = $original_call->getScript();
+    $original_script->setVar('recording_duration', $duration);
+    $original_call->setScript($original_script);
+    // update the voipcall with the new values
+    $original_call->save();
+  }
 }

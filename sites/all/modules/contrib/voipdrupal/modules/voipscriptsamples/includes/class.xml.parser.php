@@ -1,13 +1,13 @@
-<?
+<?php
 //============================================================================
 //============================================================================
 // Script:        PHP Class "xmlParser"
 //============================================================================
 // From:    http://ch2.php.net/xml
 // Autor:    monte at NOT-SP-AM dot ohrt dot com
-// Date:    14-Sep-2005 06:48 
+// Date:    14-Sep-2005 06:48
 // License/
-// Usage:    Open Source / for free    
+// Usage:    Open Source / for free
 //============================================================================
 // DESCRIPTION:
 // This is a class for XML parsing with an URL input. It does:
@@ -32,10 +32,10 @@ function xmlParser(){
 
 $this->xml_obj = xml_parser_create();
 xml_set_object($this->xml_obj,$this);
-xml_set_character_data_handler($this->xml_obj, 'dataHandler'); 
+xml_set_character_data_handler($this->xml_obj, 'dataHandler');
 xml_set_element_handler($this->xml_obj, "startHandler", "endHandler");
 
-} 
+}
 
 
 // *** ----------------------------------------------------------------
@@ -81,7 +81,7 @@ if(count($this->output) > 1) {
 $_data = array_pop($this->output);
 $_output_idx = count($this->output) - 1;
 $this->output[$_output_idx]['child'][] = $_data;
-} 
+}
 }
 
 // *** ----------------------------------------------------------------
@@ -94,7 +94,7 @@ $tree_to_search = $this->output;
 }
 
 if ($path == "") {
-return null; 
+return null;
 }
 
 $arrPath = explode('/',$path);
@@ -103,11 +103,11 @@ foreach($tree_to_search as $key => $val) {
 if (gettype($val) == "array") {
 $nodename = $val[name];
 
-if ($nodename == $arrPath[0]) { 
+if ($nodename == $arrPath[0]) {
 
-if (count($arrPath) == 1) { 
+if (count($arrPath) == 1) {
 return $val;
-} 
+}
 
 array_shift($arrPath);
 
